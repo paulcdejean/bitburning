@@ -1,0 +1,43 @@
+import {getNodes} from "/lib/getNodes.script"
+
+
+globalNodeList = getNodes()
+hiscore(globalNodeList)
+
+
+
+function hiscore(nodes) {
+  hitList = []
+  missList = {
+    Name: "oops",
+    HackingLevel: 9001
+  }
+  myHackingLevel = getHackingLevel()
+
+  for (node in nodes) {
+    if (nodes[node]["root"]) {
+      serverHackingLevel = getServerRequiredHackingLevel(node)
+      if (myHackingLevel >= serverHackingLevel) {
+        hitList.push({
+          Name: node,
+          MaxMoney: getServerMaxMoney(node),
+          MinSecurity: getServerMinSecurityLevel(node)
+        })
+      } else {
+        if (missList["HackingLevel"] > serverHackingLevel) {
+          missList.Name = node
+          missList.HackingLevel = serverHackingLevel
+        }
+      }
+    }
+  }
+
+  hitList.sort(function compareFn(lhv, rhs) {
+    return (lhv["MaxMoney"] - rhs["MaxMoney"])
+  })
+  for (node in hitList) {
+    tprint("Node ", hitList[node]["Name"], " can be hacked has max money ", hitList[node]["MaxMoney"],
+      " and min security ", hitList[node]["MinSecurity"])
+  }
+  tprint("The next server you'll be able to hack is ", missList["Name"], " at hacking level ", missList["HackingLevel"])
+}

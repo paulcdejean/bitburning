@@ -1,0 +1,12 @@
+// Launches the init ports daemon if it's not running
+
+function initPorts() {
+	var daemonName = "/daemons/initPorts.script"
+
+	if (!scriptRunning(daemonName, "home")) {
+		tprint("Initializing ports")
+		exec(daemonName, "home")
+	} else {
+		tprint("Ports already initialized")
+	}
+}

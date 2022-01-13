@@ -1,0 +1,66 @@
+// Grows a target to its maximum cash. 
+// var args[0] = the target
+// If no argument passed, it uses the targeting library to pick a target.
+
+import { getNodes } from "/lib/getNodes.script"
+import { doRemote } from "/lib/doRemote.script"
+import { getThreadCount } from "/lib/getThreadCount.script"
+import { getLock } from "/lib/getLock.script"
+import { releaseLock } from "/lib/releaseLock.script"
+
+growTarget(getNodes(), args[0], args[1])
+
+function growTarget(nodes, target, threads) {
+	// Boilerplate
+	var remoteGrowName = "/remotes/grow.script"
+	var remoteWeakenName = "/remotes/weaken.script"
+	var remoteRam = Math.max(getScriptRam(remoteWeakenName), getScriptRam(remoteGrowName))
+	var targetMinSecurity = nodes[target]["minSecurity"]
+	var availableThreads = getThreadCount(nodes, remoteRam)
+	var weakenTime = getWeakenTime(target)
+	var growTime = getGrowTime(target)
+	var growDelay = weakenTime - growTime
+	var targetMoneyMax = nodes[target]["maxMoney"]
+	var targetCurrentMoney = getServerMoneyAvailable(target)
+	var growPort = 2
+
+	// Sanity checks
+	if (targetMinSecurity != getServerSecurityLevel(target)) {
+		tprint("Target ", target, " must be weakened first before trying to grow it.")
+		return
+	}
+	if (growTime > weakenTime) {
+		tprint("Grow time is greater than weaken time, panicing")
+		return
+	}
+
+	// Threading annoucements
+	if (!threads) {
+		var threads = availableThreads
+		tprint("Growing ", target, " with all available threads ", threads,
+			" from ", targetCurrentMoney, " to ", targetMoneyMax)
+	} else if (threads > availableThreads) {
+		var threads = availableThreads
+		tprint("Insufficent threads to fulfil request, growing ", target, " with all remaining threads ", threads,
+			" from ", targetCurrentMoney, " to ", targetMoneyMax)
+	} else {
+		tprint("Growing ", target, " with ", threads, " threads",
+			" from ", targetCurrentMoney, " to ", targetMoneyMax)
+	}
+
+	// Main
+	var weakenThreads = Math.ceil(threads / 13.5)
+	var growThreads = Math.floor(threads / 13.5 * 12.5)
+
+	tprint(target, " grow threads are ", growThreads, " and weaken threads are ", weakenThreads)
+
+	getLock()
+	tprint("Aquired lock for growTarget on ", target)
+	doRemote(nodes, weakenThreads, remoteWeakenName, remoteRam, [growPort, target])
+	doRemote(nodes, growThreads, remoteGrowName, remoteRam, [growPort, target, growDelay])
+	var daemonArgs = ["/daemons/grow.script", "home", 1, target, weakenTime  + 1000, growDelay]
+	exec.apply(null, daemonArgs)
+	releaseLock()
+	tprint("Released lock for growTarget on ", target)
+	return daemonArgs
+}

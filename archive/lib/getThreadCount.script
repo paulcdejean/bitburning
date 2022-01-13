@@ -1,0 +1,11 @@
+function getThreadCount(nodes, remoteRam) {
+	disableLog("getServerUsedRam")
+	var result = 0
+	for (node in nodes) {
+		if (nodes[node]["root"]) {
+			var nodeRam = nodes[node]["ram"] - getServerUsedRam(node)
+			result = result + Math.floor(nodeRam / remoteRam)
+		}
+	}
+	return result
+}

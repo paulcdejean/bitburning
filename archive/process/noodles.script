@@ -1,0 +1,35 @@
+import { getNodes } from "/lib/getNodes.script"
+import { doRemote } from "/lib/doRemote.script"
+import { getThreadCount } from "/lib/getThreadCount.script"
+import { waitFor } from "/lib/waitFor.script"
+import { initPorts } from "/lib/initPorts.script"
+import { getLock } from "/lib/getLock.script"
+import { releaseLock } from "/lib/releaseLock.script"
+import { getFarmThreads } from "/lib/getFarmThreads.script"
+import { batchRemotes } from "/lib/batchRemotes.script"
+
+import { weakenTarget } from "/actions/weakenTarget.script"
+import { growTarget } from "/actions/growTarget.script"
+import { eatNoodles } from "/actions/eatNoodles.script"
+
+noodles()
+
+function noodles() {
+	var target = "n00dles"
+	var nodes = getNodes()
+	if (!target) {
+		tprint("Target is required")
+		exit(1)
+	}
+
+	initPorts()
+
+	if (getServerSecurityLevel(target) != nodes[target]["minSecurity"]) {
+		waitFor(weakenTarget(nodes, target, 0))
+	}
+
+	if (getServerMoneyAvailable(target) != nodes[target]["maxMoney"]) {
+		waitFor(growTarget(nodes, target, 0))
+	}
+	eatNoodles()
+}

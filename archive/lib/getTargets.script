@@ -1,0 +1,26 @@
+// Targetting formula!
+function getTargets(nodes, ratio) {
+	var result = []
+	var myHackerLevel = getHackingLevel()
+
+	for (node in nodes) {
+		if (nodes[node]["hackerLevel"] <= myHackerLevel && nodes[node]["maxMoney"] > 0) {
+			var expectedMoneyPerCycle = nodes[node]["maxMoney"] * ratio
+			var nodeIncreaseGrowThreads = growthAnalyze(node, 1 / (1 - ratio))
+			var weakenTime = getWeakenTime(node)
+			var expectedMoneyPerSecond = expectedMoneyPerCycle / weakenTime * 1000
+			var expectedMoneyPerSecondPerThread = expectedMoneyPerSecond / nodeIncreaseGrowThreads
+			result.push({
+				"name": node,
+				"score": expectedMoneyPerSecondPerThread,
+				"maxThreads": nodeIncreaseGrowThreads
+			})
+		}
+	}
+
+	result.sort(function compareFn(lhv, rhs) {
+		return (rhs["score"] - lhv["score"])
+	})
+
+	return result
+}

@@ -1,0 +1,35 @@
+
+TODO: Batching against max-hardware
+* Should reach 10 million a second ???
+
+TODO: Buying servers is stonks
+
+I think I'm seeing how I gotta do things.
+Basically run a farming process and a prepping process simultaneously.
+There would be two ports involved here.
+One port is how the prepping process reserves a certain number of threads for its use.
+The other port is used by a few different processes (such as the server buying process?)
+to let the farming process know when there's additional threads available
+actually they could be one port
+
+New farm port looks like this:
+{
+	"noodles": {
+		"cycle": 1,
+		"buffer": 200,
+		"cycleTime": 1857821,
+		"minCycleTime": 1800000,
+		"numberOfBatches": 1152,
+		"batches": [
+			{"weakenTime": 243928,
+			"growTime": 498732,
+			"hackTime": 472398},
+			{"weakenTime": 243928,
+			"growTime": 498732,
+			"hackTime": 472398},
+			{"weakenTime": 243928,
+			"growTime": 498732,
+			"hackTime": 472398},
+		]
+	}
+}

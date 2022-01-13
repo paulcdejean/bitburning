@@ -1,0 +1,12 @@
+import { getNodes } from "/lib/getNodes.script"
+
+nodes = getNodes()
+
+for (node in nodes) {
+	if (nodes[node]["maxMoney"] > 0) {
+		nodeCurrentSecurity = getServerSecurityLevel(node)
+		nodeMinSecurity = nodes[node]["minSecurity"]
+		threadsRequired = (nodeCurrentSecurity - nodeMinSecurity) / 0.05
+		tprint("Node ", node, " requires ", threadsRequired, " threads")
+	}
+}

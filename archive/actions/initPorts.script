@@ -1,0 +1,19 @@
+initPorts()
+
+function initPorts() {
+	clearPort(1)
+	clearPort(2)
+	clearPort(3)
+	clearPort(4)
+	clearPort(5)
+	clearPort(6)
+	writePort(1, "{}")
+	writePort(2, "{}")
+	writePort(3, "{}")
+	writePort(4, "{}")
+	writePort(5, "UNLOCKED")
+	writePort(6, "{}")
+	tprint("Completed reinitalizing ports")
+
+	write("/data/fullServers.txt", "{}", "w")
+}

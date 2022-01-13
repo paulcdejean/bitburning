@@ -1,0 +1,14 @@
+noodleWeaken(args[0])
+
+function noodleWeaken(initalSleep) {
+	var noodlesPort = 7
+	var portString = "NULL PORT DATA"
+	while (portString != "EAT") {
+		portString = peek(noodlesPort)
+	}
+	disableLog("sleep")
+	sleep(initalSleep)
+	while (true) {
+		weaken("n00dles")
+	}
+}

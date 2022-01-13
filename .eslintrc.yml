@@ -1,0 +1,19 @@
+env:
+  browser: true
+  es2021: true
+plugins:
+  - jsdoc
+extends:
+  - standard
+  - plugin:jsdoc/recommended
+parserOptions:
+  ecmaVersion: 12
+  sourceType: module
+rules:
+  jsdoc/no-undefined-types:
+    - error
+    - definedTypes:
+      - NS
+  jsdoc/require-param-type: [off]
+  jsdoc/require-returns-type: [off]
+  jsdoc/require-description: [warn]

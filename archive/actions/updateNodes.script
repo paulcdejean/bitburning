@@ -1,0 +1,202 @@
+// Update the node list. Sadly slow even when it runs with no ns function calls.
+// Would be fast if done in .js lol
+updateNodes(args[0])
+
+// Get the list of nodes, excluding home
+function updateNodes(fresh) {
+	var nodeListFile = "/data/nodes.txt"
+
+	// The list of servers currently doesn't change! So we don't ever need to scan more than once.
+	// The scan function is slow, so this is good.
+	if (fileExists(nodeListFile)) {
+		var nodeList = JSON.parse(read(nodeListFile))
+	} else {
+		var nodeList = {}
+		nodeList["home"] = { "scanned": false }
+		tprint("No node list found, rescanning all nodes")
+		scanNodes(nodeList)
+		// Requires TOR router, and has no RAM anyway...
+		if ("darkweb" in nodeList) {
+			delete nodeList["darkweb"]
+		}
+	}
+
+	if (fresh) {
+		// Fill out information on required ports to nuke a node.
+		tprint("Updating ports info for fresh run")
+		var nodeList = fillPorts(nodeList)
+		// Fill RAM
+		tprint("Updating RAM info for fresh run")
+		var nodeList = fillRam(nodeList)
+		// Fill required level
+		tprint("Updating required level info for fresh run")
+		var nodeList = fillHackerLevel(nodeList)
+
+		tprint("Updating min security info for fresh run")
+		var nodeList = fillMinSecurity(nodeList)
+
+		tprint("Updating max money info for fresh run")
+		var nodeList = fillMaxMoney(nodeList)
+	}
+
+	// Fill out information on which nodes you have root on.
+	// Also will give you root if possible.
+	fillRoot(nodeList)
+
+	write(nodeListFile, JSON.stringify(nodeList, null, 2), "w")
+
+	tprint("Updated node info")
+
+	return nodeList
+
+	// Library functions
+
+	// Fills out max money amount of the node list.
+	// This randomizes every ascension.
+	function fillMaxMoney(nodes) {
+		for (node in nodes) {
+			nodes[node]["maxMoney"] = getServerMaxMoney(node)
+		}
+		return nodes
+	}
+
+	// Fills out required min security level of the node list.
+	// This randomizes every ascension.
+	function fillMinSecurity(nodes) {
+		for (node in nodes) {
+			nodes[node]["minSecurity"] = getServerMinSecurityLevel(node)
+		}
+		return nodes
+	}
+
+	// Fills out required hacker level of the node list.
+	// This randomizes every ascension.
+	function fillHackerLevel(nodes) {
+		for (node in nodes) {
+			nodes[node]["hackerLevel"] = getServerRequiredHackingLevel(node)
+		}
+		return nodes
+	}
+
+	// Fill out RAM of the node list.
+	// This randomizes every ascension.
+	function fillRam(nodes) {
+		for (node in nodes) {
+			if (node == "home") {
+				// Reserve 64GB of RAM for non farming use\
+				var homeMaxRam = getServerMaxRam(node)
+				if (homeMaxRam <= 256) {
+					nodes[node]["ram"] = 0
+				} else {
+					nodes[node]["ram"] = getServerMaxRam(node) - 256
+				}
+			} else {
+				nodes[node]["ram"] = getServerMaxRam(node)
+			}
+		}
+		return nodes
+	}
+
+	// Fill out root property of the node list.
+	function fillRoot(nodes) {
+		// If we just reset, we don't have root on anything.
+		if (fresh) {
+			for (node in nodes) {
+				if (!nodes[node]["purchased"]) {
+					nodes[node]["root"] = false
+				}
+			}
+		}
+
+		var pwnageList = getPwnageList()
+		var pwnagePower = pwnageList.length
+
+		for (node in nodes) {
+			if (node == "home") {
+				nodes[node]["root"] = true
+			} else if (!("root" in nodes[node])) {
+				nodes[node]["root"] = false
+			} else if (nodes[node]["root"] == false && nodes[node]["requiredPorts"] <= pwnagePower) {
+				pwn(node, pwnageList)
+				nodes[node]["root"] = true
+			}
+		}
+	}
+
+	// Gets root on a node.
+	function pwn(node, pwnageList) {
+		if (pwnageList.includes("BruteSSH.exe")) {
+			brutessh(node)
+		}
+		if (pwnageList.includes("FTPCrack.exe")) {
+			ftpcrack(node)
+		}
+		if (pwnageList.includes("relaySMTP.exe")) {
+			relaysmtp(node)
+		}
+		if (pwnageList.includes("HTTPWorm.exe")) {
+			httpworm(node)
+		}
+		if (pwnageList.includes("SQLInject.exe")) {
+			sqlinject(node)
+		}
+		nuke(node)
+	}
+
+	// Returns a list of all port opening skids we have.
+	function getPwnageList() {
+		var result = []
+		var allHacks = [
+			"BruteSSH.exe",
+			"FTPCrack.exe",
+			"relaySMTP.exe",
+			"HTTPWorm.exe",
+			"SQLInject.exe"
+		]
+		for (h in allHacks) {
+			if (fileExists(allHacks[h], "home")) {
+				result.push(allHacks[h])
+			}
+		}
+		return result
+	}
+
+	// Fill the required ports property of the node list.
+	function fillPorts(nodes) {
+		for (node in nodes) {
+			nodes[node]["requiredPorts"] = getServerNumPortsRequired(node)
+		}
+		return nodes
+	}
+
+	// Scan all nodes initializing the node list.
+	function scanNodes(nodes) {
+		var startingNodeCount = Object.keys(nodes).length
+		// Run scan on each node in the list. Add any new nodes to the nodes.
+		for (node in nodes) {
+			var scanResults = []
+			if (nodes[node]["scanned"] == false) {
+				var scanResults = scan(node)
+				nodes[node]["scanned"] = true
+			}
+
+			for (k in scanResults) {
+				if (!(scanResults[k] in nodes)) {
+					nodes[scanResults[k]] = {
+						"scanned": false,
+						"purchased": false
+					}
+				}
+			}
+		}
+
+		// If the nodes has grown since the start of the function, recur.
+		var newNodeCount = Object.keys(nodes).length
+		if (newNodeCount > startingNodeCount) {
+			return scanNodes(nodes)
+		} else {
+			// If it hasn't, then we're found all nodes so we can conclude.
+			return nodes
+		}
+	}
+}

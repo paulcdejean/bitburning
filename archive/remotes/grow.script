@@ -1,0 +1,26 @@
+growRemote(args[0], args[1], args[2])
+
+function growRemote(remotePort, target, sleepTime) {
+	var presleep = args[2] / 5 * 4
+	var cycle = 0
+	while (true) {
+		sleep(presleep)
+		while (true) {
+			var portString = peek(remotePort)
+			if (portString == "NULL PORT DATA") {
+				continue
+			}
+			var portData = JSON.parse(portString)
+
+			if (target in portData) {
+				if (portData[target] > cycle) {
+					break
+				}
+			}
+		}
+		var cycle = cycle + 1
+		grow(target)
+		// A tprint fixed this heisenbug, this attempts to replicate that...
+		sleep(50)
+	}
+}

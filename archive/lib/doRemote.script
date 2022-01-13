@@ -1,0 +1,32 @@
+function doRemote(nodes, threads, remoteName, remoteRam, remoteArgs) {
+	print("Lauching remote ", remoteName, " with ", threads, " threads")
+	var result = []
+
+	var remainingThreads = threads
+
+	for (node in nodes) {
+		if (nodes[node]["root"]) {
+			var nodeRam = nodes[node]["ram"] - getServerUsedRam(node)
+			var threadCount = Math.floor(nodeRam / remoteRam)
+			if (threadCount <= 0) {
+				continue
+			} else {
+				if (threadCount <= remainingThreads) {
+					var pid = exec.apply(null, [remoteName, node, threadCount].concat(remoteArgs))
+
+					result.push(pid)
+					remainingThreads = remainingThreads - threadCount
+				} else {
+					var pid = exec.apply(null, [remoteName, node, remainingThreads].concat(remoteArgs))
+					result.push(pid)
+					break
+				}
+			}
+			if (remainingThreads <= 0) {
+				break
+			}
+		}
+	}
+	tprint("Finished lauching remote ", remoteName, " with ", threads, " threads")
+	return result
+}

@@ -1,0 +1,13 @@
+// Get the list of nodes, excluding home
+function getNodes() {
+	var nodeListFile = "/data/nodes.txt"
+
+	// The list of servers currently doesn't change! So we don't ever need to scan more than once.
+	// The scan function is slow, so this is good.
+	if (fileExists(nodeListFile)) {
+		var nodeList = JSON.parse(read(nodeListFile))
+	} else {
+		tprint("node list not found, fix with: run actions/updateNodes.script")
+	}
+	return nodeList
+}

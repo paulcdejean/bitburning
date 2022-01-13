@@ -1,0 +1,53 @@
+import { getNodes } from "/lib/getNodes.script"
+import { getTargets } from "/lib/getTargets.script"
+import { getThreadCount } from "/lib/getThreadCount.script"
+import { doRemote } from "/lib/doRemote.script"
+import { initPorts } from "/lib/initPorts.script"
+import { waitFor } from "/lib/waitFor.script"
+
+import { weakenTarget } from "/actions/weakenTarget.script"
+import { growTarget } from "/actions/growTarget.script"
+import { farmTarget } from "/actions/farmTarget.script"
+
+import { farm } from "/process/farm.script"
+
+main()
+
+function main() {
+	initPorts()
+
+	var nodes = getNodes()
+	tprint("Getting targets")
+	var targets = getTargets(nodes, 0.5)
+
+	disableLog("disableLog")
+	disableLog("enableLog")
+	disableLog("sleep")
+	disableLog("getServerMinSecurityLevel")
+	disableLog("getServerMoneyAvailable")
+
+	var remoteGrowName = "/remotes/grow.script"
+	var remoteWeakenName = "/remotes/weaken.script"
+	var remoteHackName = "/remotes/hack.script"
+	var remoteRam = Math.max(getScriptRam(remoteGrowName), getScriptRam(remoteWeakenName), getScriptRam(remoteHackName))
+
+	tprint("Getting thread count")
+	var availableThreads = getThreadCount(nodes, remoteRam)
+	tprint("Right now there are ", availableThreads, " available threads")
+
+	for (target in targets) {
+		var targetThreads = Math.ceil(targets[target]["maxThreads"])
+		var targetName = targets[target]["name"]
+
+		if (targetThreads > availableThreads) {
+			tprint("To farm target ", targetName, " we require ", targetThreads,
+				" threads and we only have ", availableThreads, " threads")
+			break
+		}
+
+		tprint("Farming ", targetName, " with ", targetThreads, " threads")
+		//farm(targetName, targetThreads)
+		run("/process/farm.script", 1, targetName, targetThreads)
+		availableThreads = availableThreads - targetThreads
+	}
+}

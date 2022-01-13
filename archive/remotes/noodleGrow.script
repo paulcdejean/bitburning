@@ -1,0 +1,19 @@
+noodleGrow(args[0])
+
+function noodleGrow(initalSleep) {
+	noodlesPort = 7
+	portString = "NULL PORT DATA"
+	while (portString != "EAT") {
+		portString = peek(noodlesPort)
+	}
+	disableLog("sleep")
+	sleep(initalSleep)
+	
+	while (true) {
+		// Possibly dumb
+		var weakenTime = getWeakenTime("n00dles")
+		var growTime = getGrowTime("n00dles")
+		sleep(weakenTime - growTime - 100)
+		grow("n00dles")
+	}
+}

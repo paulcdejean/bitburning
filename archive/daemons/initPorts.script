@@ -1,0 +1,11 @@
+import { initPorts } from "/actions/initPorts.script"
+
+daemonReinitPorts()
+
+function daemonReinitPorts() {
+	initPorts()
+	disableLog("sleep")
+	while (true) {
+		sleep(60000)
+	}
+}

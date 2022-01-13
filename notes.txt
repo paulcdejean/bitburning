@@ -1,0 +1,13 @@
+HWGW
+
+The starting time of the last hack, can't be later than the ending time of the first hack.
+
+So the number of batches is roughly:
+
+Hack time * 2 / ( buffer * 4)
+
+4231 * 2 / ( 50 * 4)
+
+TODO: Figure out the formulas magic for how much less a server grows when you raise its security
+TODO: How da heck farm multiple servers at once?
+

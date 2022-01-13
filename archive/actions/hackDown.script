@@ -1,0 +1,98 @@
+// Hacks a node all the way down to a percentage of its max cash. Not designed to be sustainable
+// var args[0] = the target
+// var args[1] = the amount to hack it down to, very possible to overshoot
+// var args[2] = threads
+
+import { getNodes } from "/lib/getNodes.script"
+import { doRemote } from "/lib/doRemote.script"
+import { getThreadCount } from "/lib/getThreadCount.script"
+import { getLock } from "/lib/getLock.script"
+import { releaseLock } from "/lib/releaseLock.script"
+
+hackDown(getNodes(), args[0], args[1], args[2])
+
+function hackDown(nodes, target, almsRemaining, threads) {
+	// Boilerplate
+	var remoteHackName = "/remotes/hack.script"
+	var remoteWeakenName = "/remotes/weaken.script"
+	var remoteRam = Math.max(getScriptRam(remoteWeakenName), getScriptRam(remoteHackName))
+	var availableThreads = getThreadCount(nodes, remoteRam)
+	var targetMinSecurity = nodes[target]["minSecurity"]
+	var targetCurrentMoney = getServerMoneyAvailable(target)
+	var targetMoneyMax = nodes[target]["maxMoney"]
+	var hackTime = getHackTime(target)
+	var weakenTime = getWeakenTime(target)
+	var hackRate = hackAnalyze(target)
+	var hackDownPort = 3
+	var remainingMoney = targetMoneyMax * almsRemaining
+
+	// Sanity checks
+	if (!almsRemaining) {
+		tprint("Required: specify as the second arg 0 < n < 1 for the amount remaining to target")
+		return
+	} else if (almsRemaining < 0 || almsRemaining > 1) {
+		tprint("Second arg must be between 0 and 1")
+		return
+	}
+	if (targetMinSecurity != getServerSecurityLevel(target)) {
+		tprint("Target ", target, " must be weakened first before trying to grow it.")
+		return
+	}
+
+	// Threading annoucements
+	if (!threads) {
+		threads = availableThreads
+		tprint("Hacking down ", target, " with up to all available threads ", threads,
+			" from ", targetCurrentMoney.toLocaleString(), " to ", remainingMoney.toLocaleString())
+	} else if (threads > availableThreads) {
+		threads = availableThreads
+		tprint("Insufficent threads to fulfil request, hacking down ", target, " with up to all remaining threads ",
+			threads, " from ", targetCurrentMone.toLocaleString(), " to ", remainingMoney.toLocaleString())
+	} else {
+		tprint("Hacking down ", target, " with up to ", threads, " threads",
+			" from ", targetCurrentMoney.toLocaleString(), " to ", remainingMoney.toLocaleString())
+	}
+
+	// Main
+	// The 1.10 is a heuristic
+	// Because the 2nd, 3rd, 4th etc hacks before the weaken don't run at min security...
+	var hackCount = Math.floor(weakenTime / (hackTime * 1.10))
+	var hackSecurity = 0.002 * hackCount
+	var weakenSecurity = 0.05
+	var hackRatio = weakenSecurity / (hackSecurity + weakenSecurity)
+	var weakenRatio = hackSecurity / (hackSecurity + weakenSecurity)
+
+	// We have access to the number of threads passed into the script
+	// But we don't have to use them all if it means we'd over hack
+	// We don't want to under hack, becacuse then it'll run hack for another cycle
+	var approxAmountRemaining = targetMoneyMax * almsRemaining
+	var requiredHackAmount = 1 - (approxAmountRemaining / targetCurrentMoney)
+	requiredHackAmount = Math.pow(requiredHackAmount, hackCount)
+	var maxHackingThreads = Math.ceil(requiredHackAmount / hackRate)
+	var maxWeakenThreads = Math.ceil(maxHackingThreads * hackSecurity / weakenSecurity)
+
+	print("Hack count is: ", hackCount)
+	print("Required hack amount is: ", requiredHackAmount)
+	print("Max hacking threads is: ", maxHackingThreads)
+	print("Max weaken threads is: ", maxWeakenThreads)
+
+	if (threads > maxHackingThreads + maxWeakenThreads) {
+		var hackThreads = maxHackingThreads
+		var weakenThreads = maxWeakenThreads
+	} else {
+		var hackThreads = Math.floor(threads * hackRatio)
+		var weakenThreads = Math.ceil(threads * weakenRatio)
+	}
+
+	tprint("Hack threads are ", hackThreads, " and weaken threads are ", weakenThreads)
+
+	getLock()
+	tprint("Aquired lock for hackDown on ", target)
+	doRemote(nodes, weakenThreads, remoteWeakenName, remoteRam, [hackDownPort, target])
+	doRemote(nodes, hackThreads, remoteHackName, remoteRam, [hackDownPort, target, hackCount])
+	var daemonArgs = ["/daemons/hackDown.script", "home", 1, target, weakenTime + 1000, hackCount, almsRemaining]
+	exec.apply(null, daemonArgs)
+	releaseLock()
+	tprint("Released lock for hackDown on ", target)
+	return daemonArgs
+}

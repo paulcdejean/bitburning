@@ -1,0 +1,12 @@
+node = getServer(args[0])
+me = getPlayer()
+resultGrow = formulas.hacking.growPercent(node, 1, me, 1)
+resultGrowTime = formulas.hacking.growTime(node, me)
+resultHack = formulas.hacking.hackPercent(node, me)
+resultHackTime = formulas.hacking.hackTime(node, me)
+//node["hackDifficulty"] = node["minDifficulty"]
+tprint(node)
+tprint("Growth amount: ", resultGrow)
+tprint("Growth time: ", resultGrowTime)
+tprint("Hack amount: ", resultHack)
+tprint("Hack time: ", resultHackTime)

@@ -1,0 +1,27 @@
+// Runs a long list of remotes on all available nodes
+
+function batchRemotes(nodes, remotes, remoteRam) {
+	var currentBatch = remotes.pop()
+
+	for (node in nodes) {
+		var nodeRam = nodes[node]["ram"] - getServerUsedRam(node)
+		var threadCount = Math.floor(nodeRam / remoteRam)
+		while (threadCount > 0) {
+			if (currentBatch["threads"] <= threadCount) {
+				var exeArgs = [currentBatch["name"], node, currentBatch["threads"]].concat(currentBatch["args"])
+				exec.apply(null, exeArgs)
+				threadCount = threadCount - currentBatch["threads"]
+				if(remotes.length > 0) {
+					var currentBatch = remotes.pop()
+				} else {
+					return
+				}
+			} else {
+				var exeArgs = [currentBatch["name"], node, threadCount].concat(currentBatch["args"])
+				exec.apply(null, exeArgs)
+				currentBatch["threads"] = currentBatch["threads"] - threadCount
+				threadCount = 0
+			}
+		}
+	}
+}

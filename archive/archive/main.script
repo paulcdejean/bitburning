@@ -1,0 +1,185 @@
+disableLog("scan")
+disableLog("getServerNumPortsRequired")
+disableLog("sleep")
+disableLog("getServerMoneyAvailable")
+
+globalNodeList = {}
+globalNodeList[getHostname()] = { "scanned": false }
+
+globalAllHacks = [
+  "BruteSSH.exe",
+  "FTPCrack.exe",
+  "relaySMTP.exe",
+  "HTTPWorm.exe",
+  "SQLInject.exe"
+]
+
+gloalAvailableHacks = fillAvailableHacks()
+
+// This take around 3 minutes, so we cache it to a file
+// TODO: logic for buying servers?
+if (fileExists("nodes.txt")) {
+  globalNodeList = JSON.parse(read("nodes.txt"))
+} else {
+  globalNodeList = fillNodeList(globalNodeList)
+  // We don't want to hack ourselves, too much special casing here
+  delete globalNodeList.home
+  fillRoot(globalNodeList)
+  write("nodes.txt", JSON.stringify(globalNodeList), "w")
+}
+
+// TODO: basic targeting algorithm
+//globalTarget = "max-hardware"
+//globalTarget = "joesguns"
+globalTarget = "omega-net"
+globalTargetMaxCash = getServerMaxMoney(globalTarget)
+globalTargetMinSecurity = getServerMinSecurityLevel(globalTarget) 
+
+joeGrow(globalNodeList)
+// Wait until we hit max money before hacking
+while (true) {
+  targetCurrentCash = getServerMoneyAvailable(globalTarget)
+  if (targetCurrentCash == globalTargetMaxCash) {
+    break
+  } else {
+    sleep(1000)
+  }
+}
+
+nodeKill(globalNodeList)
+joeHack(globalNodeList)
+// Wait until we've hacked 50% of max
+while (true) {
+  targetCurrentCash = getServerMoneyAvailable(globalTarget)
+  if (targetCurrentCash < (globalTargetMaxCash / 2)) {
+    break
+  } else {
+    sleep(1000)
+  }
+}
+
+nodeKill(globalNodeList)
+tprint("Done!")
+exit()
+
+//fillInfo(globalNodeList)
+//print(globalNodeList)
+
+function nodeKill(nodes) {
+  for (node in nodes) {
+    killall(node)
+  }
+}
+
+function joeHack(nodes) {
+  for (node in nodes) {
+    if (nodes[node]["root"]) {
+      scriptRam = getScriptRam("joehack.script")
+      nodeRam = getServerMaxRam(node)
+      threadcount = Math.floor(nodeRam / scriptRam)
+      if (threadcount > 0) {
+        scp("joehack.script", node)
+        exec("joehack.script", node, threadcount, globalTarget, globalTargetMinSecurity)
+      } else {
+        print(node, " lacks RAM has only ", nodeRam, "GB of RAM")
+      }
+    }
+  }
+}
+
+function joeGrow(nodes) {
+  for (node in nodes) {
+    if (nodes[node]["root"]) {
+      scriptRam = getScriptRam("joegrow.script")
+      nodeRam = getServerMaxRam(node)
+      threadcount = Math.floor(nodeRam / scriptRam)
+      if (threadcount > 0) {
+        scp("joegrow.script", node)
+        exec("joegrow.script", node, threadcount, globalTarget, globalTargetMinSecurity)
+      } else {
+        print(node, " lacks RAM has only ", nodeRam, "GB of RAM")
+      }
+    }
+  }
+}
+
+// Gets root on everything it can that's not rooted, then fills out root status.
+function fillRoot(nodes) {
+  for (node in nodes) {
+    hasroot = hasRootAccess(node)
+    if (hasroot) {
+      nodes[node]["root"] = true
+    }
+    else {
+      requiredPorts = getServerNumPortsRequired(node)
+      if (requiredPorts <= gloalAvailableHacks.length) {
+        pwn(node)
+        nodes[node]["root"] = true
+      } else {
+        nodes[node]["root"] = false
+      }
+    }
+  }
+  return nodes
+}
+
+function fillAvailableHacks() {
+  result = []
+  for (h in globalAllHacks) {
+    if (fileExists(globalAllHacks[h], "home")) {
+      result.push(globalAllHacks[h])
+    }
+  }
+  return result
+}
+
+function pwn(node) {
+  if (gloalAvailableHacks.includes("BruteSSH.exe")) {
+    brutessh(node)
+  }
+  if (gloalAvailableHacks.includes("FTPCrack.exe")) {
+    ftpcrack(node)
+  }
+  if (gloalAvailableHacks.includes("relaySMTP.exe")) {
+    relaysmtp(node)
+  }
+  if (gloalAvailableHacks.includes("HTTPWorm.exe")) {
+    httpworm(node)
+  }
+  if (gloalAvailableHacks.includes("SQLInject.exe")) {
+    sqlinject(node)
+  }
+  nuke(node)
+}
+
+// Fills out an object with all the nodes
+function fillNodeList(nodes) {
+  startingNodeCount = Object.keys(nodes).length
+  print("Node list is up to ", startingNodeCount)
+  // Run scan on each node in the list. Add any new nodes to the nodes.
+  for (node in nodes) {
+    scanResults = []
+    // Only scan once
+    if (nodes[node]["scanned"] == false) {
+      scanResults = scan(node)
+      nodes[node]["scanned"] = true
+    }
+
+    for (k in scanResults) {
+      if (!(scanResults[k] in nodes)) {
+        nodes[scanResults[k]] = {
+          "scanned": false
+        }
+      }
+    }
+  }
+
+  // If the nodes has grown since the start of the function, recur.
+  newNodeCount = Object.keys(nodes).length
+  if (newNodeCount > startingNodeCount) {
+    return fillNodeList(nodes)
+  } else {
+    // If it hasn't, then we're found all nodes so we can conclude.
+    return nodes
+  }
+}

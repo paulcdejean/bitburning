@@ -1,0 +1,102 @@
+batchTarget(args[0], args[1], args[2], args[3], args[4], args[5])
+
+import { getNodes } from "/lib/getNodes.script"
+import { doRemote } from "/lib/doRemote.script"
+import { getThreadCount } from "/lib/getThreadCount.script"
+import { getLock } from "/lib/getLock.script"
+import { releaseLock } from "/lib/releaseLock.script"
+import { getFarmThreads } from "/lib/getFarmThreads.script"
+import { batchRemotes } from "/lib/batchRemotes.script"
+
+function batchTarget(target, skimPercent, maxThreads, opsBuffer, batchBuffer, cycleBuffer) {
+	// Defaults
+	if (!skimPercent) {
+		skimPercent = 0.5
+	}
+	if (!batchBuffer) {
+		batchBuffer = 50
+	}
+	if (!opsBuffer) {
+		opsBuffer = 10
+	}
+	if (!cycleBuffer) {
+		cycleBuffer = 1000
+	}
+
+	// boilerplate
+	var remoteGrowName = "/remotes/grow.script"
+	var remoteWeakenName = "/remotes/weaken.script"
+	var remoteHackName = "/remotes/hack.script"
+	var remoteRam = Math.max(getScriptRam(remoteGrowName), getScriptRam(remoteWeakenName), getScriptRam(remoteHackName))
+	var hackTime = getHackTime(target)
+	var weakenTime = getWeakenTime(target)
+	var minSecurity = getServerMinSecurityLevel(target)
+	var nodes = getNodes()
+
+	// main
+	tprint("Getting available threads")
+	getLock()
+	var availableThreads = Math.min(getThreadCount(nodes, remoteRam), maxThreads)
+
+	var hackCount = Math.floor(weakenTime / hackTime)
+	var farmThreads
+	var batches
+	var maxBatches
+	while (true) {
+		farmThreads = getFarmThreads(target, skimPercent, hackCount)
+		batches = Math.floor(availableThreads / farmThreads["totalThreads"])
+		var hackGrowthPerSecurity = hackTime / (200 + minSecurity)
+		var worstCaseTotalHackTime = (hackTime * hackCount) +
+			(hackGrowthPerSecurity * batches * hackThreads * hackCount * 0.002 * (hackCount - 1))
+
+		if (worstCaseTotalHackTime > weakenTime) {
+			hackCount = hackCount - 1
+			continue
+		} else {
+			break
+		}
+	}
+
+	var prehackTime = weakenTime - worstCaseTotalHackTime - opsBuffer
+	var endOfFirstHack = prehackTime + hackTime
+	var maxBatches = Math.floor(endOfFirstHack / batchBuffer)
+
+	batches = Math.min(batches, maxBatches)
+
+	tprint("Hacking threads are ", farmThreads["hackThreads"], " with ", hackCount, " hacks per thread")
+	tprint("Worst case time of all hacks is ", worstCaseTotalHackTime)
+	tprint("The first hack ends at ", endOfFirstHack, " so we can fit up to ", maxBatches, " batches in")
+	tprint("Farming ", target, " with ", batches * farmThreads["totalThreads"], " threads out of ", availableThreads)
+	tprint("That's ", batches, " batches of ", farmThreads["totalThreads"], " threads each")
+
+	// Start remotes
+	var batch = 0
+	var remotes = []
+	while (batch < batches) {
+		remotes.push({
+			name: "/remotes/batchWeaken.script",
+			threads: farmThreads["weakenThreads"],
+			args: [target, batch]
+		})
+		remotes.push({
+			name: "/remotes/batchGrow.script",
+			threads: farmThreads["growThreads"],
+			args: [target, batch]
+		})
+		remotes.push({
+			name: "/remotes/batchHack.script",
+			threads: farmThreads["weakenThreads"],
+			args: [target, batch, hackCount]
+		})
+		batch = batch + 1
+	}
+
+	disableLog("exec")
+	batchRemotes(nodes, remotes, remoteRam)
+	releaseLock()
+
+	enableLog("exec")
+	var daemonArgs = ["/daemons/batch.script", "home", 1,
+		target, batches, hackCount, farmThreads["hackThreads"], opsBuffer, batchBuffer, cycleBuffer]
+	exec.apply(null, daemonArgs)
+}
