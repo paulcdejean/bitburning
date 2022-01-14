@@ -1,6 +1,0 @@
-// Gives back the port 5 lock
-
-function releaseLock() {
-	var lockPort = 5
-	writePort(lockPort, "UNLOCKED")
-}

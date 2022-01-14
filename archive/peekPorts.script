@@ -1,5 +1,0 @@
-n = 0
-while (n < 7) {
-	n = n + 1
-	tprint("Port ", n, " value is: ", peek(n))
-}

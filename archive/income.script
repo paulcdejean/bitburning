@@ -1,4 +1,0 @@
-scriptIncome = getScriptIncome()
-timeSinceAug = getTimeSinceLastAug() / 1000
-tprint("Current income: ", nFormat(scriptIncome[0], "0.000a"))
-tprint("Total hacking earnings: ", nFormat(scriptIncome[1] * timeSinceAug, "0.000a"))

@@ -1,9 +1,0 @@
-// Spins until it can grab the port 5 lock
-
-function getLock() {
-	var lockPort = 5
-	disableLog("sleep")
-	while(readPort(5) != "UNLOCKED") {
-		sleep(200)
-	}
-}

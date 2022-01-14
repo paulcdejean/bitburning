@@ -1,4 +1,0 @@
-import * as foo from "/testing/exportTest.script"; //Import all functions from script
-
-tprint(foo)
-foo.hello()
