@@ -2,8 +2,7 @@
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-guards": "file:../eslint-plugin-guards",
-    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-bitburning": "file:../eslint-plugin-bitburning",
     "eslint-plugin-jsdoc": "^37.5.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.2.0"

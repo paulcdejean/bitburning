@@ -1,13 +1,8 @@
-HWGW
+TODO:
 
-The starting time of the last hack, can't be later than the ending time of the first hack.
-
-So the number of batches is roughly:
-
-Hack time * 2 / ( buffer * 4)
-
-4231 * 2 / ( 50 * 4)
-
-TODO: Figure out the formulas magic for how much less a server grows when you raise its security
-TODO: How da heck farm multiple servers at once?
-
+* Require async functions to have the first letter capitalized
+* Require non async functions to have the first letter be lowercase
+* Require await before NS functions: hack, grow, weaken, sleep, prompt, wget, scp, write, writePort
+* Require await before async functions (have the first letter capitalized)
+* Require guards
+* Require constants in constants.js use SCREAMING_SNAKE_CASE
