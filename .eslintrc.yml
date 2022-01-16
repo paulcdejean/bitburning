@@ -4,6 +4,7 @@ env:
 plugins:
   - jsdoc
   - bitburning
+  - no-autofix
 extends:
   - standard
   - plugin:jsdoc/recommended
@@ -13,7 +14,14 @@ parserOptions:
 rules:
   curly: warn
   require-await: warn
+  default-param-last: warn
+  prefer-const: off
+  no-autofix/prefer-const: warn
+  bitburning/export-filename: warn
   bitburning/require-async-suffix: warn
+  bitburning/await-ns-functions: warn
+  bitburning/await-async-functions: warn
+  bitburning/require-guards: warn
   jsdoc/no-undefined-types:
     - error
     - definedTypes:

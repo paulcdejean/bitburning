@@ -1,13 +1,16 @@
-/** @param {NS} ns */
+import { GuardError } from './errors/GuardError.js'
 
 import { lockPort, unlocked } from './lib/constants.js'
 
 /**
  * Sleeps until it can pull the lock off of the lock port
  *
- * @param ns NS
+ * @param {NS} ns NS
  */
-export async function aquireLock (ns) {
+export async function aquireLockAsync (ns) {
+  if (ns === undefined) {
+    throw new GuardError('ns is required')
+  }
   let reenableLog = false
   if (ns.isLogEnabled('asleep')) {
     reenableLog = true

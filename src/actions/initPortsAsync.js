@@ -1,5 +1,7 @@
 /** @param {NS} ns */
 
+import { GuardError } from './errors/GuardError.js'
+
 import { lockPort, weakenPort, growPort, unlocked, singleHackFarmPort } from './lib/constants.js'
 
 /**
@@ -8,7 +10,10 @@ import { lockPort, weakenPort, growPort, unlocked, singleHackFarmPort } from './
  * @param ns NS
  */
 export async function main (ns) {
-  await initPorts(ns)
+  if (ns === undefined) {
+    throw new GuardError('ns is required')
+  }
+  await initPortsAsync(ns)
 }
 
 /**
@@ -16,7 +21,10 @@ export async function main (ns) {
  *
  * @param ns NS
  */
-export async function initPorts (ns) {
+export async function initPortsAsync (ns) {
+  if (ns === undefined) {
+    throw new GuardError('ns is required')
+  }
   ns.clearPort(lockPort)
   await ns.writePort(lockPort, unlocked)
   ns.clearPort(weakenPort)

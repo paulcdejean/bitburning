@@ -4,11 +4,13 @@
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-bitburning": "file:../eslint-plugin-bitburning",
     "eslint-plugin-jsdoc": "^37.5.1",
+    "eslint-plugin-no-autofix": "^1.2.3",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.2.0"
   },
   "scripts": {
     "lint": "eslint src/",
+    "lint-fix": "eslint src/ --fix",
     "test": "mocha tests --recursive"
   }
 }
