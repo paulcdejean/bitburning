@@ -25,6 +25,7 @@ export function getTargetInfo (ns, target) {
   info.growTime = ns.getGrowTime(target)
   info.hackTime = ns.getHackTime(target)
   info.hackPower = ns.hackAnalyze(target)
+  info.requiredSkill = serverInfo.requiredHackingSkill
 
   return info
 }

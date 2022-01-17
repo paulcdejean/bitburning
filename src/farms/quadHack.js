@@ -1,7 +1,5 @@
 import { GuardError } from './errors/GuardError.js'
 
-import { DEFAULT_SKIM_PERCENT } from './lib/constants.js'
-
 import { calculateQuadHackFarm } from './lib/calculateQuadHackFarm.js'
 
 /**
@@ -22,15 +20,17 @@ export function main (ns) {
  *
  * @param {NS} ns NS
  * @param target The target to quadhack farm
- * @param skimPercent The percentage to skim from the target
+ * @param threads The number of threads to quadhack with
  */
-export function quadHack (ns, target, skimPercent = DEFAULT_SKIM_PERCENT) {
+export function quadHack (ns, target, threads) {
   if (ns === undefined) {
     throw new GuardError('ns is required')
   }
   if (target === undefined) {
     throw new GuardError('target is required')
   }
-
-  calculateQuadHackFarm(ns, target, skimPercent)
+  if (threads === undefined) {
+    throw new GuardError('threads is required')
+  }
+  calculateQuadHackFarm(ns, target, threads)
 }
