@@ -1,8 +1,6 @@
-/** @param {NS} ns */
-
 import { GuardError } from './errors/GuardError.js'
 
-import { lockPort, weakenPort, growPort, unlocked, singleHackFarmPort } from './lib/constants.js'
+import { LOCK_PORT, GROW_PORT, UNLOCKED, WEAKEN_PORT, FARM_PORT } from './lib/constants.js'
 
 /**
  * Wraps initPorts allowing it to be called from the command line
@@ -25,13 +23,13 @@ export async function initPortsAsync (ns) {
   if (ns === undefined) {
     throw new GuardError('ns is required')
   }
-  ns.clearPort(lockPort)
-  await ns.writePort(lockPort, unlocked)
-  ns.clearPort(weakenPort)
-  await ns.writePort(weakenPort, '{}')
-  ns.clearPort(growPort)
-  await ns.writePort(growPort, '{}')
-  ns.clearPort(singleHackFarmPort)
-  await ns.writePort(singleHackFarmPort, '{}')
+  ns.clearPort(LOCK_PORT)
+  await ns.writePort(LOCK_PORT, UNLOCKED)
+  ns.clearPort(WEAKEN_PORT)
+  await ns.writePort(WEAKEN_PORT, '{}')
+  ns.clearPort(GROW_PORT)
+  await ns.writePort(GROW_PORT, '{}')
+  ns.clearPort(FARM_PORT)
+  await ns.writePort(FARM_PORT, '{}')
   ns.tprint('Initialized ports')
 }

@@ -13,7 +13,6 @@ parserOptions:
   sourceType: module
 rules:
   curly: warn
-  require-await: warn
   default-param-last: warn
   prefer-const: off
   no-autofix/prefer-const: warn

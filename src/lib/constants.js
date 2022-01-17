@@ -1,19 +1,18 @@
-export const home = 'home'
-export const weakenSecurityPower = 0.05
-export const growSecurityPower = 0.004
-export const hackSecurityPower = 0.002
-export const nullPortData = 'NULL PORT DATA'
-export const unlocked = 'UNLOCKED'
-export const milisecondsInASecond = 1000
+export const HOME = 'home'
+export const WEAKEN_SECURITY_POWER = 0.05
+export const GROW_SECURITY_POWER = 0.004
+export const HACK_SECURITY_POWER = 0.002
+export const NULL_PORT_DATA = 'NULL PORT DATA'
+export const UNLOCKED = 'UNLOCKED'
+export const MILLISECONDS_IN_A_SECOND = 1000
 
-export const lockPort = 1
-export const weakenPort = 2
-export const growPort = 3
-export const singleHackFarmPort = 4
+export const LOCK_PORT = 1
+export const WEAKEN_PORT = 2
+export const GROW_PORT = 3
+export const FARM_PORT = 4
 
-export const remotesFolder = '/remotes/'
+export const REMOTES_FOLDER = '/remotes/'
 
-export const defaultSkimPercent = 0.5
+export const DEFAULT_SKIM_PERCENT = 0.5
 
-export const mathDebuggingEnabled = true
-export const defaultGrowthSafety = 1
+export const MATH_DEBUGGING = true

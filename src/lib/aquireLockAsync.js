@@ -1,6 +1,6 @@
 import { GuardError } from './errors/GuardError.js'
 
-import { lockPort, unlocked } from './lib/constants.js'
+import { LOCK_PORT, UNLOCKED } from './lib/constants.js'
 
 /**
  * Sleeps until it can pull the lock off of the lock port
@@ -19,7 +19,7 @@ export async function aquireLockAsync (ns) {
 
   ns.print('Waiting for lock')
 
-  while (ns.readPort(lockPort) !== unlocked) {
+  while (ns.readPort(LOCK_PORT) !== UNLOCKED) {
     await ns.asleep(20)
   }
 

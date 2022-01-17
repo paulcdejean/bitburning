@@ -24,6 +24,7 @@ export function getTargetInfo (ns, target) {
   info.weakenTime = ns.getWeakenTime(target)
   info.growTime = ns.getGrowTime(target)
   info.hackTime = ns.getHackTime(target)
+  info.hackPower = ns.hackAnalyze(target)
 
   return info
 }
