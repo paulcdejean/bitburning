@@ -1,4 +1,5 @@
 import { GuardError } from './errors/GuardError.js'
+import { MissingNodeListError } from './errors/MissingNodeListError.js'
 
 import { NODE_LIST_FILE } from './lib/nodes/constants.js'
 
@@ -16,7 +17,6 @@ export function getNodes (ns) {
     const nodeList = JSON.parse(ns.read(NODE_LIST_FILE))
     return nodeList
   } else {
-    ns.tprint('node list not found, fix with: run nodes/updateNodes.js')
-    return {}
+    throw new MissingNodeListError('node list not found, fix with: run actions/updateNodesAsync.js')
   }
 }

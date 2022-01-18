@@ -5,6 +5,7 @@ import { getAvailableThreads } from './lib/getAvailableThreads.js'
 
 import { initPortsAsync } from './actions/initPortsAsync.js'
 import { updateNodesAsync } from './actions/updateNodesAsync.js'
+import { scpRemotesAsync } from './actions/scpRemotesAsync.js'
 
 /**
  * Wraps init allowing it to be called from the command line.
@@ -15,26 +16,13 @@ export async function main (ns) {
   if (ns === undefined) {
     throw new GuardError('ns is required')
   }
-  await initAsync(ns)
-}
-
-/**
- * Good to run at the start of a run.
- *
- * @param {NS} ns NS
- */
-export async function initAsync (ns) {
-  if (ns === undefined) {
-    throw new GuardError('ns is required')
-  }
-
   await updateNodesAsync(ns)
 
   await initPortsAsync(ns)
 
-  // scpRemotes(ns)
-
   const nodes = getNodes(ns)
+
+  await scpRemotesAsync(ns, nodes)
 
   const availableThreads = getAvailableThreads(ns, nodes, 1.75)
 

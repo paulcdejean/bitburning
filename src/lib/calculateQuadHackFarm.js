@@ -1,5 +1,5 @@
-import { MinSecurityRequiredError } from './errors/MinSecurityRequiredError.js'
 import { GuardError } from './errors/GuardError.js'
+import { InsufficentHackingPowerError } from './errors/InsufficentHackingPowerError.js'
 
 import { getTargetInfo } from './lib/getTargetInfo.js'
 
@@ -12,6 +12,7 @@ import {
 
 /**
  * Calculates the profitability, number of threads and cycle time, for the quad hack farm method.
+ * If run with non minimum security gives a very rough guesstimate.
  *
  * @param {NS} ns NS
  * @param target The target to calculate quad hack farm stats for
@@ -35,11 +36,12 @@ export function calculateQuadHackFarm (ns, target, threads, opsBuffer = DEFAULT_
 
   const targetInfo = getTargetInfo(ns, target)
 
-  if (targetInfo.currentSecurity !== targetInfo.minSecurity) {
-    throw new MinSecurityRequiredError("Quad hack farm doesn't use formulas, and so requires minimum security to calculate")
-  }
-
   const hacksPerThread = 4
+
+  // Sanity check, hack power 0 means it's too advanced for us
+  if (targetInfo.hackPower === 0) {
+    throw new InsufficentHackingPowerError('Tried to calculate quad hack farm on ' + target + ' which is too difficult')
+  }
 
   // We do a linear search here, we just keep adding hacking threads until the total threads is greater than what we have available.
   // After that we calculate with that many hacking threads - 1
@@ -62,6 +64,8 @@ export function calculateQuadHackFarm (ns, target, threads, opsBuffer = DEFAULT_
     const weakenThreads = Math.ceil(securityIncrase / ns.weakenAnalyze(1))
     totalThreads = hackThreads + growThreads + weakenThreads
   }
+
+  // Hacking threads equaling zero here, means we don't have enough
 
   // Once more to get the final result
   hackThreads = hackThreads - 1
@@ -99,13 +103,25 @@ export function calculateQuadHackFarm (ns, target, threads, opsBuffer = DEFAULT_
 
   const moneyPerCycle = targetInfo.maxMoney * (1 - percentToLeave)
   const moneyPerSecond = moneyPerCycle / cycleTime * MILLISECONDS_IN_A_SECOND
-  const moneyPerSecondPerThread = moneyPerSecond / totalThreads
+  let moneyPerSecondPerThread
+  if (totalThreads === 0) {
+    moneyPerSecondPerThread = 0
+  } else {
+    moneyPerSecondPerThread = moneyPerSecond / totalThreads
+  }
 
   if (MATH_DEBUGGING) {
     ns.tprint('moneyPerCycle = ', ns.nFormat(moneyPerCycle, '0.000a'))
     ns.tprint('moneyPerSecond = ', ns.nFormat(moneyPerSecond, '0.000a'))
     ns.tprint('moneyPerSecondPerThread = ', ns.nFormat(moneyPerSecondPerThread, '0.000a'))
   }
+
+  result.moneyPerSecond = moneyPerSecond
+  result.weakenThreads = weakenThreads
+  result.growThreads = growThreads
+  result.hackThreads = hackThreads
+  result.totalThreads = totalThreads
+  result.cycleTime = cycleTime
 
   return result
 }

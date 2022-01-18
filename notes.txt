@@ -1,0 +1,4 @@
+TODO:
+* Reimplement weaken and grow actions
+* Finish implementing quad hack farm
+* Targetting script on quad hack farm
