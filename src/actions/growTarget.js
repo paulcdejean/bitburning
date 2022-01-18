@@ -11,8 +11,10 @@ import { batchRemotes } from './lib/batchRemotes.js'
 
 import {
   WEAKEN_REMOTE_FILE,
-  WEAKEN_PORT,
-  HOME
+  GROW_REMOTE_FILE,
+  GROW_PORT,
+  HOME,
+  MATH_DEBUGGING
 } from './lib/constants.js'
 
 /**
@@ -37,19 +39,19 @@ export async function main (ns) {
     threads = ns.args[1]
   }
 
-  weakenTarget(ns, ns.args[0], threads)
+  growTarget(ns, ns.args[0], threads)
   await releaseLockAsync(ns)
 }
 
 /**
- * Weakens a target to min security, launching a daemon and remote to faciliate this
+ * Grows a target to max money.
  *
  * @param {NS} ns NS
- * @param target The target to weaken
- * @param threads The number of threads to use to weaken the target
- * @returns The arguments of the weaken daemon launched to supervise this action
+ * @param target The target to grow to max money
+ * @param threads The number of threads to use to grow the target
+ * @returns The arguments of the grow daemon launched to supervise this action
  */
-export function weakenTarget (ns, target, threads) {
+export function growTarget (ns, target, threads) {
   if (ns === undefined) {
     throw new GuardError('ns is required')
   }
@@ -60,32 +62,40 @@ export function weakenTarget (ns, target, threads) {
     throw new GuardError('threads is required')
   }
 
-  const daemonFilename = '/daemons/weakenDaemonAsync.js'
+  const daemonFilename = '/daemons/growDaemonAsync.js'
 
   if (!ns.fileExists(daemonFilename)) {
     throw new FileNotFoundError("Couldn't find daemon file " + daemonFilename)
   }
 
-  ns.tprint('Weakening ', target, ' with ', threads, ' threads')
+  ns.tprint('Growing ', target, ' with ', threads, ' threads')
 
   const targetInfo = getTargetInfo(ns, target)
-  const remoteRam = getRemoteRam(ns, WEAKEN_REMOTE_FILE)
+  const remoteRam = getRemoteRam(ns, WEAKEN_REMOTE_FILE, GROW_REMOTE_FILE)
+  const weakenSecurityPower = ns.weakenAnalyze(1)
+  const growSecurityPower = ns.growthAnalyzeSecurity(1)
+  const weakenRatio = growSecurityPower / (weakenSecurityPower + growSecurityPower)
+  const growRatio = weakenSecurityPower / (weakenSecurityPower + growSecurityPower)
+  const weakenThreads = Math.ceil(threads * weakenRatio)
+  const growThreads = Math.ceil(threads * growRatio)
+  const growthNeeded = targetInfo.maxMoney / targetInfo.currentMoney
+  const cycleCount = Math.ceil(ns.growthAnalyze(target, growthNeeded) / growThreads)
 
-  const cycleCount = Math.ceil(Math.max(1, (targetInfo.currentSecurity - targetInfo.minSecurity) / ns.weakenAnalyze(threads)))
-  ns.tprint('Fully weakening ', target, ' from ', targetInfo.currentSecurity, ' security to ', targetInfo.minSecurity,
+  if (MATH_DEBUGGING) {
+    ns.tprint('weakenSecurityPower = ', weakenSecurityPower)
+    ns.tprint('growSecurityPower = ', growSecurityPower)
+    ns.tprint('weakenRatio = ', weakenRatio)
+    ns.tprint('growRatio = ', growRatio)
+    ns.tprint('weakenThreads = ', weakenThreads)
+    ns.tprint('growThreads = ', growThreads)
+    ns.tprint('growthNeeded = ', growthNeeded)
+    ns.tprint('cycleCount = ', cycleCount)
+  }
+
+  ns.tprint('Fully growing ', target, ' from ', targetInfo.currentMoney, ' security to ', targetInfo.maxMoney,
     ' will take ', cycleCount, ' cycles')
 
-  // Launch remotes
-  const remotes = [{
-    name: WEAKEN_REMOTE_FILE,
-    threads: threads,
-    args: [WEAKEN_PORT, target, 0]
-  }]
-  batchRemotes(ns, remotes, remoteRam)
-
-  // Launch daemon
-  ns.tprint('Launching daemon')
   const daemonArgs = [daemonFilename, HOME, 1, target]
-  ns.exec(...daemonArgs)
+
   return daemonArgs
 }

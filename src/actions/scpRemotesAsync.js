@@ -15,23 +15,21 @@ export async function main (ns) {
   if (ns === undefined) {
     throw new GuardError('ns is required')
   }
-  const nodes = getNodes(ns)
-  await scpRemotesAsync(ns, nodes)
+
+  await scpRemotesAsync(ns)
 }
 
 /**
  * scps remote scripts over to all known nodes
  *
  * @param ns NS
- * @param nodes the nodes object
  */
-export async function scpRemotesAsync (ns, nodes) {
+export async function scpRemotesAsync (ns) {
   if (ns === undefined) {
     throw new GuardError('ns is required')
   }
-  if (nodes === undefined) {
-    throw new GuardError('nodes is required')
-  }
+
+  const nodes = getNodes(ns)
 
   const remotes = ns.ls(HOME, REMOTES_FOLDER)
   for (const node in nodes) {

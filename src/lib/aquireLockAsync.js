@@ -17,10 +17,11 @@ export async function aquireLockAsync (ns) {
     ns.disableLog('asleep')
   }
 
-  ns.print('Waiting for lock')
-
-  while (ns.readPort(LOCK_PORT) !== UNLOCKED) {
-    await ns.asleep(20)
+  if (ns.readPort(LOCK_PORT) !== UNLOCKED) {
+    ns.tprint(ns.getScriptName(), ' waiting for lock')
+    while (ns.readPort(LOCK_PORT) !== UNLOCKED) {
+      await ns.asleep(20)
+    }
   }
 
   if (reenableLog) {

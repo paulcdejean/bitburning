@@ -1,14 +1,17 @@
 import { GuardError } from './errors/GuardError.js'
 
-import { getNodes } from './lib/getNodes.js'
-import { getAvailableThreads } from './lib/getAvailableThreads.js'
+import {
+  HOME
+} from './lib/constants.js'
+
+import { waitForExecAsync } from './lib/waitForExecAsync.js'
 
 import { initPortsAsync } from './actions/initPortsAsync.js'
 import { updateNodesAsync } from './actions/updateNodesAsync.js'
 import { scpRemotesAsync } from './actions/scpRemotesAsync.js'
 
 /**
- * Wraps init allowing it to be called from the command line.
+ * LETS GO!
  *
  * @param {NS} ns NS
  */
@@ -16,15 +19,18 @@ export async function main (ns) {
   if (ns === undefined) {
     throw new GuardError('ns is required')
   }
+  ns.disableLog('disableLog')
   await updateNodesAsync(ns)
-
   await initPortsAsync(ns)
+  await scpRemotesAsync(ns)
 
-  const nodes = getNodes(ns)
+  await waitForExecAsync(ns, ns.exec('/goals/goalOneAsync.js', HOME))
+  // await waitForExecAsync(ns, ns.exec('/goals/goalTwoAsync.js', HOME))
+  // await waitForExecAsync(ns, ns.exec('/goals/goalThreeAsync.js', HOME))
+  // await waitForExecAsync(ns, ns.exec('/goals/goalFourAsync.js', HOME))
+  // await waitForExecAsync(ns, ns.exec('/goals/goalFiveAsync.js', HOME))
+  // await waitForExecAsync(ns, ns.exec('/goals/goalSixAsync.js', HOME))
 
-  await scpRemotesAsync(ns, nodes)
-
-  const availableThreads = getAvailableThreads(ns, nodes, 1.75)
-
-  ns.tprint('Available threads: ', availableThreads)
+  ns.disableLog('asleep')
+  ns.tprint('All goals completed!')
 }

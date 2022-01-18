@@ -17,7 +17,12 @@ export async function waitForDaemonAsync (ns, daemonArgs) {
   ns.disableLog('asleep')
   ns.tprint('Waiting for completion of ', daemonArgs[0], ' on ', daemonArgs[1])
   ns.print('Waiting for completion of ', daemonArgs[0], ' on ', daemonArgs[1])
+
+  // Remove thread count
+  daemonArgs.splice(2, 1)
+
   while (ns.isRunning(...daemonArgs)) {
     await ns.asleep(1000)
   }
+  ns.tprint(daemonArgs)
 }

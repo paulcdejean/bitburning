@@ -54,7 +54,8 @@ export function hiscore (ns, nodes, threads) {
           name: node,
           farmType: 'QUAD',
           moneyPerSecond: quadHackResults.moneyPerSecond,
-          cycleTime: quadHackResults.cycleTime
+          cycleTime: quadHackResults.cycleTime,
+          threads: threads
         })
       }
     }

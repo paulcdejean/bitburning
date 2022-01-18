@@ -15,7 +15,9 @@ export const DEFAULT_SKIM_PERCENT = 0.5
 
 export const MATH_DEBUGGING = false
 
-export const DEFAULT_CYCLE_BUFFER = 100
+export const DEFAULT_CYCLE_BUFFER = 200
 export const DEFAULT_OPS_BUFFER = 50
 
 export const WEAKEN_REMOTE_FILE = '/remotes/weaken.js'
+export const GROW_REMOTE_FILE = '/remotes/grow.js'
+export const HACK_REMOTE_FILE = '/remotes/hack.js'
