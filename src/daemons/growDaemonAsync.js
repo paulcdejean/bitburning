@@ -1,12 +1,11 @@
 import { GuardError } from './errors/GuardError.js'
 
 /**
+ * Wrapper
+ *
  * @param {ns} ns NS
  */
 export async function main (ns) {
-  if (ns === undefined) {
-    throw new GuardError('ns is required')
-  }
 }
 
 /**

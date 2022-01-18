@@ -12,9 +12,6 @@ import { NODE_LIST_FILE } from './lib/nodes/constants.js'
  * @param ns NS
  */
 export async function main (ns) {
-  if (ns === undefined) {
-    throw new GuardError('ns is required')
-  }
   await updateNodesAsync(ns)
 }
 

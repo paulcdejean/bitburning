@@ -10,10 +10,6 @@ import { calculateQuadHackFarm } from './lib/calculateQuadHackFarm.js'
  * @param {NS} ns NS
  */
 export async function main (ns) {
-  if (ns === undefined) {
-    throw new GuardError('ns is required')
-  }
-
   const nodes = getNodes(ns)
   const availableThreads = getAvailableThreads(ns, nodes, 1.75)
 

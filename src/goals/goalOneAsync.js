@@ -41,9 +41,5 @@ export async function goalOneAsync (ns) {
  * @param {NS} ns NS
  */
 export async function main (ns) {
-  if (ns === undefined) {
-    throw new GuardError('ns is required')
-  }
-
   await goalOneAsync(ns)
 }

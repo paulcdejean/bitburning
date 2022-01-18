@@ -13,10 +13,6 @@ import {
  * @param {NS} ns NS
  */
 export async function main (ns) {
-  if (ns === undefined) {
-    throw new GuardError('ns is required')
-  }
-
   await weakenDaemonAsync(ns, ns.args[0])
 }
 

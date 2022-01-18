@@ -8,9 +8,6 @@ import { LOCK_PORT, GROW_PORT, UNLOCKED, WEAKEN_PORT, FARM_PORT } from './lib/co
  * @param ns NS
  */
 export async function main (ns) {
-  if (ns === undefined) {
-    throw new GuardError('ns is required')
-  }
   await initPortsAsync(ns)
 }
 

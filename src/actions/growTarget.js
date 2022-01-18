@@ -25,10 +25,6 @@ import {
  * @param {NS} ns NS
  */
 export async function main (ns) {
-  if (ns === undefined) {
-    throw new GuardError('ns is required')
-  }
-
   const remoteRam = getRemoteRam(ns, WEAKEN_REMOTE_FILE)
 
   await aquireLockAsync(ns)

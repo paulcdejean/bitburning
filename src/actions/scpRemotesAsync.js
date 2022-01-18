@@ -12,10 +12,6 @@ import {
  * @param ns NS
  */
 export async function main (ns) {
-  if (ns === undefined) {
-    throw new GuardError('ns is required')
-  }
-
   await scpRemotesAsync(ns)
 }
 

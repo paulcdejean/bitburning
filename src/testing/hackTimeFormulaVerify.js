@@ -6,10 +6,6 @@ import { GuardError } from './errors/GuardError.js'
  * @param {NS} ns NS
  */
 export async function main (ns) {
-  if (ns === undefined) {
-    throw new GuardError('ns is required')
-  }
-
   hackTimeFormulaVerify(ns, ns.args[0])
 }
 

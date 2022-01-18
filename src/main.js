@@ -1,14 +1,12 @@
-import { GuardError } from './errors/GuardError.js'
-
-import {
-  HOME
-} from './lib/constants.js'
-
 import { waitForExecAsync } from './lib/waitForExecAsync.js'
 
 import { initPortsAsync } from './actions/initPortsAsync.js'
 import { updateNodesAsync } from './actions/updateNodesAsync.js'
 import { scpRemotesAsync } from './actions/scpRemotesAsync.js'
+
+import {
+  HOME
+} from './lib/constants.js'
 
 /**
  * LETS GO!
@@ -16,9 +14,6 @@ import { scpRemotesAsync } from './actions/scpRemotesAsync.js'
  * @param {NS} ns NS
  */
 export async function main (ns) {
-  if (ns === undefined) {
-    throw new GuardError('ns is required')
-  }
   ns.disableLog('disableLog')
   await updateNodesAsync(ns)
   await initPortsAsync(ns)

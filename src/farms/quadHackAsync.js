@@ -13,10 +13,6 @@ import { quadHackFarmTargetAsync } from './actions/quadHackFarmTargetAsync.js'
  * @param {NS} ns NS
  */
 export async function main (ns) {
-  if (ns === undefined) {
-    throw new GuardError('ns is required')
-  }
-
   await quadHackAsync(ns, ns.args[0], ns.args[1])
 }
 
