@@ -13,6 +13,8 @@ export async function main (ns) {
   const nodes = getNodes(ns)
   const availableThreads = getAvailableThreads(ns, nodes, 1.75)
 
+  ns.tprint('Available threads = ', availableThreads)
+
   const scoreArray = hiscore(ns, nodes, availableThreads)
 
   for (const score of scoreArray) {

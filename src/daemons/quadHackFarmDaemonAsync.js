@@ -6,7 +6,10 @@ import { getTargetInfo } from './lib/getTargetInfo.js'
 import {
   DEFAULT_CYCLE_BUFFER,
   DEFAULT_OPS_BUFFER,
-  FARM_PORT
+  FARM_PORT,
+  FARM_STOP_PORT,
+  STOP_FARMS,
+  FARMS_STOPPED
 } from './lib/constants.js'
 
 /**
@@ -89,5 +92,14 @@ export async function quadHackFarmDaemonAsync (ns, target, hackThreads, cycleBuf
     }
 
     ns.tprint('After ', cycle, ' cycles ', target, ' money is ', ns.nFormat(currentMoney, '0.000a'), ' and security is ', currentSecurity)
+
+    // Check for terminating condition, which is a port signal
+    if (ns.readPort(FARM_STOP_PORT) === STOP_FARMS) {
+      cycleData.finished = true
+      cycleData.cycle = 0
+      await updateTargetPortDataAsync(ns, FARM_PORT, target, cycleData)
+      await ns.writePort(FARM_STOP_PORT, FARMS_STOPPED)
+      return
+    }
   }
 }
