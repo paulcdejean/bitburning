@@ -60,7 +60,7 @@ export function calculateQuadHackFarm (ns, target, threads, opsBuffer = DEFAULT_
     }
     const percentToLeave = Math.pow((1 - (targetInfo.hackPower * hackThreads)), hacksPerThread)
     const growThreads = Math.ceil(ns.growthAnalyze(target, 1 / percentToLeave))
-    const securityIncrase = ns.growthAnalyzeSecurity(growThreads) + ns.hackAnalyzeSecurity(hackThreads)
+    const securityIncrase = ns.growthAnalyzeSecurity(growThreads) + (ns.hackAnalyzeSecurity(hackThreads) * hacksPerThread)
     const weakenThreads = Math.ceil(securityIncrase / ns.weakenAnalyze(1))
     totalThreads = hackThreads + growThreads + weakenThreads
   }
@@ -71,7 +71,7 @@ export function calculateQuadHackFarm (ns, target, threads, opsBuffer = DEFAULT_
   hackThreads = hackThreads - 1
   const percentToLeave = Math.pow((1 - (targetInfo.hackPower * hackThreads)), hacksPerThread)
   const growThreads = Math.ceil(ns.growthAnalyze(target, 1 / percentToLeave))
-  const securityIncrase = ns.growthAnalyzeSecurity(growThreads) + ns.hackAnalyzeSecurity(hackThreads)
+  const securityIncrase = ns.growthAnalyzeSecurity(growThreads) + (ns.hackAnalyzeSecurity(hackThreads) * hacksPerThread)
   const weakenThreads = Math.ceil(securityIncrase / ns.weakenAnalyze(1))
   totalThreads = hackThreads + growThreads + weakenThreads
 

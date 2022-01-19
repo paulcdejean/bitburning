@@ -16,7 +16,7 @@ export const REMOTES_FOLDER = '/remotes/'
 
 export const DEFAULT_SKIM_PERCENT = 0.5
 
-export const MATH_DEBUGGING = true
+export const MATH_DEBUGGING = false
 
 export const DEFAULT_CYCLE_BUFFER = 200
 export const DEFAULT_OPS_BUFFER = 50
