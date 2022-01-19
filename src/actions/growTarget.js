@@ -59,7 +59,6 @@ export function growTarget (ns, target, threads) {
   }
 
   const daemonFilename = '/daemons/growDaemonAsync.js'
-
   if (!ns.fileExists(daemonFilename)) {
     throw new FileNotFoundError("Couldn't find daemon file " + daemonFilename)
   }
@@ -88,10 +87,27 @@ export function growTarget (ns, target, threads) {
     ns.tprint('cycleCount = ', cycleCount)
   }
 
-  ns.tprint('Fully growing ', target, ' from ', targetInfo.currentMoney, ' security to ', targetInfo.maxMoney,
+  ns.tprint('Fully growing ', target, ' from ', ns.nFormat(targetInfo.currentMoney, '0.000a'), ' money to ', ns.nFormat(targetInfo.maxMoney, '0.000a'),
     ' will take ', cycleCount, ' cycles')
 
-  const daemonArgs = [daemonFilename, HOME, 1, target]
+  // Launch remotes
+  const remotes = [
+    {
+      name: GROW_REMOTE_FILE,
+      threads: growThreads,
+      args: [GROW_PORT, target, 0]
+    },
+    {
+      name: WEAKEN_REMOTE_FILE,
+      threads: weakenThreads,
+      args: [GROW_PORT, target, 0]
+    }
+  ]
+  batchRemotes(ns, remotes, remoteRam)
 
+  // Launch daemon
+  ns.tprint('Launching daemon')
+  const daemonArgs = [daemonFilename, HOME, 1, target]
+  ns.exec(...daemonArgs)
   return daemonArgs
 }

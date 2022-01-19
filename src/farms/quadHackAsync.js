@@ -5,7 +5,7 @@ import { waitForDaemonAsync } from './lib/waitForDaemonAsync.js'
 
 import { weakenTarget } from './actions/weakenTarget.js'
 import { growTarget } from './actions/growTarget.js'
-import { quadHackFarmTargetAsync } from './actions/quadHackFarmTargetAsync.js'
+import { quadHackFarmTarget } from './actions/quadHackFarmTarget.js'
 
 /**
  * Wraps quadHack allowing it to be called from the command line
@@ -47,5 +47,5 @@ export async function quadHackAsync (ns, target, threads) {
     ns.tprint(target, ' is already at maximum money')
   }
 
-  await quadHackFarmTargetAsync(ns, target, threads)
+  await quadHackFarmTarget(ns, target, threads)
 }

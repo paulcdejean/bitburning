@@ -24,5 +24,4 @@ export async function waitForDaemonAsync (ns, daemonArgs) {
   while (ns.isRunning(...daemonArgs)) {
     await ns.asleep(1000)
   }
-  ns.tprint(daemonArgs)
 }

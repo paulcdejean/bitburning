@@ -8,7 +8,7 @@
  * @param {NS} ns NS
  */
 export async function main (ns) {
-  // const threads = ns.args[0]
+  const threads = ns.args[0]
   // subBatchNumber = ns.args[1]
   const daemonPort = ns.args[2]
   const target = ns.args[3]
@@ -45,6 +45,6 @@ export async function main (ns) {
     await ns.asleep(weakenSleep)
 
     await ns.weaken(target)
-    // ns.tprint('Batch ', batch, ' weaken ', threads, ' threads: ', ns.nFormat(ns.getServerMoneyAvailable(target), '0.000a'))
+    ns.tprint('Batch ', batch, ' weaken ', threads, ' threads: ', ns.nFormat(ns.getServerMoneyAvailable(target), '0.000a'))
   }
 }

@@ -8,11 +8,12 @@
  * @param {NS} ns NS
  */
 export async function main (ns) {
-  // const threads = ns.args[0]
+  const threads = ns.args[0]
   // const subBatchNumber = ns.args[1]
   const daemonPort = ns.args[2]
   const target = ns.args[3]
   const batch = ns.args[4]
+  const hackCount = ns.args[5]
 
   let portString
   let portData
@@ -44,7 +45,12 @@ export async function main (ns) {
     const hackSleep = portData[target].batches[batch].hack
     await ns.asleep(hackSleep)
 
-    await ns.hack(target)
-    // ns.tprint('Batch ', batch, ' hack ', threads, ' threads: ', ns.nFormat(ns.getServerMoneyAvailable(target), '0.000a'))
+    let hackNumber = 0
+    while (hackNumber < hackCount) {
+      hackNumber = hackNumber + 1
+      await ns.hack(target)
+      ns.tprint('Batch ', batch, ' hack #', hackNumber, ' ',
+        threads, ' threads: ', ns.nFormat(ns.getServerMoneyAvailable(target), '0.000a'))
+    }
   }
 }

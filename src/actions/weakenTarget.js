@@ -57,7 +57,6 @@ export function weakenTarget (ns, target, threads) {
   }
 
   const daemonFilename = '/daemons/weakenDaemonAsync.js'
-
   if (!ns.fileExists(daemonFilename)) {
     throw new FileNotFoundError("Couldn't find daemon file " + daemonFilename)
   }
