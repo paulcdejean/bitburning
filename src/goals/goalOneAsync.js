@@ -6,7 +6,9 @@ import { getRemoteRam } from './lib/getRemoteRam.js'
 import { getAvailableThreads } from './lib/getAvailableThreads.js'
 import { aquireLockAsync } from './lib/aquireLockAsync.js'
 import { releaseLockAsync } from './lib/releaseLockAsync.js'
+
 import { stopFarmsAsync } from './actions/stopFarmsAsync.js'
+import { updateNodesAsync } from './actions/updateNodesAsync.js'
 
 import { quadHackAsync } from './farms/quadHackAsync.js'
 
@@ -51,7 +53,9 @@ export async function goalOneAsync (ns) {
   while (!ns.fileExists('BruteSSH.exe')) {
     await ns.asleep(1000)
   }
-  ns.tprint('Thanks for buying BruteSSH.exe the goal one is now complete')
+  ns.tprint('Thanks for buying BruteSSH.exe updating nodes')
+  await updateNodesAsync(ns)
+  ns.tprint('Goal 1 is completed')
 }
 
 /**

@@ -14,7 +14,9 @@ import {
   GROW_REMOTE_FILE,
   GROW_PORT,
   HOME,
-  MATH_DEBUGGING
+  MATH_DEBUGGING,
+  DEFAULT_CYCLE_BUFFER,
+  DEFAULT_OPS_BUFFER
 } from './lib/constants.js'
 
 /**
@@ -45,9 +47,11 @@ export async function main (ns) {
  * @param {NS} ns NS
  * @param target The target to grow to max money
  * @param threads The number of threads to use to grow the target
+ * @param cycleBuffer The amount of time to wait after the weaken to calculate the cycle
+ * @param opsBuffer The amount of time to wait between the grow and the weaken
  * @returns The arguments of the grow daemon launched to supervise this action
  */
-export function growTarget (ns, target, threads) {
+export function growTarget (ns, target, threads, cycleBuffer = DEFAULT_CYCLE_BUFFER, opsBuffer = DEFAULT_OPS_BUFFER) {
   if (ns === undefined) {
     throw new GuardError('ns is required')
   }
@@ -75,6 +79,7 @@ export function growTarget (ns, target, threads) {
   const growThreads = Math.ceil(threads * growRatio)
   const growthNeeded = targetInfo.maxMoney / targetInfo.currentMoney
   const cycleCount = Math.ceil(ns.growthAnalyze(target, growthNeeded) / growThreads)
+  const cycleTime = targetInfo.weakenTime + cycleBuffer
 
   if (MATH_DEBUGGING) {
     ns.tprint('weakenSecurityPower = ', weakenSecurityPower)
@@ -85,10 +90,11 @@ export function growTarget (ns, target, threads) {
     ns.tprint('growThreads = ', growThreads)
     ns.tprint('growthNeeded = ', growthNeeded)
     ns.tprint('cycleCount = ', cycleCount)
+    ns.tprint('cycleTime = ', cycleTime)
   }
 
   ns.tprint('Fully growing ', target, ' from ', ns.nFormat(targetInfo.currentMoney, '0.000a'), ' money to ', ns.nFormat(targetInfo.maxMoney, '0.000a'),
-    ' will take ', cycleCount, ' cycles')
+    ' will take ', cycleCount, ' cycles at ', ns.tFormat(cycleTime), ' per cycle')
 
   // Launch remotes
   const remotes = [

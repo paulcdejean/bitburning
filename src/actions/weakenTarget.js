@@ -12,7 +12,8 @@ import { batchRemotes } from './lib/batchRemotes.js'
 import {
   WEAKEN_REMOTE_FILE,
   WEAKEN_PORT,
-  HOME
+  HOME,
+  DEFAULT_CYCLE_BUFFER
 } from './lib/constants.js'
 
 /**
@@ -43,9 +44,10 @@ export async function main (ns) {
  * @param {NS} ns NS
  * @param target The target to weaken
  * @param threads The number of threads to use to weaken the target
+ * @param cycleBuffer The amount of time to wait after the weaken before calculating the cycle
  * @returns The arguments of the weaken daemon launched to supervise this action
  */
-export function weakenTarget (ns, target, threads) {
+export function weakenTarget (ns, target, threads, cycleBuffer = DEFAULT_CYCLE_BUFFER) {
   if (ns === undefined) {
     throw new GuardError('ns is required')
   }
@@ -65,10 +67,11 @@ export function weakenTarget (ns, target, threads) {
 
   const targetInfo = getTargetInfo(ns, target)
   const remoteRam = getRemoteRam(ns, WEAKEN_REMOTE_FILE)
+  const cycleTime = targetInfo.weakenTime + cycleBuffer
 
   const cycleCount = Math.ceil(Math.max(1, (targetInfo.currentSecurity - targetInfo.minSecurity) / ns.weakenAnalyze(threads)))
   ns.tprint('Fully weakening ', target, ' from ', targetInfo.currentSecurity, ' security to ', targetInfo.minSecurity,
-    ' will take ', cycleCount, ' cycles')
+    ' will take ', cycleCount, ' cycles at ', ns.tFormat(cycleTime), ' per cycle')
 
   // Launch remotes
   const remotes = [{
