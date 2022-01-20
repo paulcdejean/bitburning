@@ -44,6 +44,63 @@ export async function hwgwFarmDaemonAsync (ns, target, batches, cycleBuffer = DE
 
   let cycle = 0
   ns.tprint('Starting hwgw farm daemon cycle 1 for ', target)
-  cycle = cycle + 1
-  ns.tprint(cycle)
+  while (true) {
+    cycle = cycle + 1
+    const targetInfo = getTargetInfo(ns, target)
+
+    const batchData = []
+
+    // Base cases
+    const hackSleep = targetInfo.weakenTime - targetInfo.hackTime - opsBuffer
+    const hackWeakenSleep = 0
+    const growSleep = targetInfo.weakenTime - targetInfo.growTime + opsBuffer
+    const growWeakenSleep = opsBuffer * 2
+    const cycleTime = targetInfo.weakenTime + (batches * opsBuffer) + cycleBuffer
+
+    let batch = 0
+    while (batch < batches) {
+      batchData.push({
+        hack: hackSleep + (opsBuffer * batch),
+        hackWeaken: hackWeakenSleep + (opsBuffer * batch),
+        growSleep: growSleep + (opsBuffer * batch),
+        growWeaken: growWeakenSleep + (opsBuffer * batch)
+      })
+      batch = batch + 1
+    }
+
+    const cycleData = {
+      cycle: cycle,
+      finished: false,
+      batches: batchData
+    }
+
+    await updateTargetPortDataAsync(ns, FARM_PORT, target, cycleData)
+
+    // The cycle
+    await ns.asleep(cycleTime)
+
+    // Report on the cycle
+    const currentSecurity = ns.getServerSecurityLevel(target)
+    const currentMoney = ns.getServerMoneyAvailable(target)
+
+    if (currentSecurity !== targetInfo.minSecurity) {
+      ns.tprint('WARNING: during HWGW farm operation, security of ', target,
+        ' has drifted from minimum of ', targetInfo.minSecurity, ' to ', currentSecurity)
+    }
+    if (currentMoney < targetInfo.maxMoney) {
+      ns.tprint('WARNING: during HWGW farm operation, money of ', target,
+        ' has drifted from max of ', targetInfo.maxMoney, ' to ', currentMoney)
+    }
+
+    ns.tprint('After ', cycle, ' cycles ', target, ' money is ', ns.nFormat(currentMoney, '0.000a'), ' and security is ', currentSecurity)
+
+    // Check for terminating condition, which is a port signal
+    if (ns.readPort(FARM_STOP_PORT) === STOP_FARMS) {
+      cycleData.finished = true
+      cycleData.cycle = 0
+      await updateTargetPortDataAsync(ns, FARM_PORT, target, cycleData)
+      await ns.writePort(FARM_STOP_PORT, FARMS_STOPPED)
+      return
+    }
+  }
 }
