@@ -55,15 +55,15 @@ export async function hwgwFarmDaemonAsync (ns, target, batches, cycleBuffer = DE
     const hackWeakenSleep = 0
     const growSleep = targetInfo.weakenTime - targetInfo.growTime + opsBuffer
     const growWeakenSleep = opsBuffer * 2
-    const cycleTime = targetInfo.weakenTime + (batches * opsBuffer) + cycleBuffer
+    const cycleTime = targetInfo.weakenTime + (batches * opsBuffer * 4) + cycleBuffer
 
     let batch = 0
     while (batch < batches) {
       batchData.push({
-        hack: hackSleep + (opsBuffer * batch),
-        hackWeaken: hackWeakenSleep + (opsBuffer * batch),
-        grow: growSleep + (opsBuffer * batch),
-        growWeaken: growWeakenSleep + (opsBuffer * batch)
+        hack: hackSleep + (opsBuffer * batch * 4),
+        hackWeaken: hackWeakenSleep + (opsBuffer * batch * 4),
+        grow: growSleep + (opsBuffer * batch * 4),
+        growWeaken: growWeakenSleep + (opsBuffer * batch * 4)
       })
       batch = batch + 1
     }

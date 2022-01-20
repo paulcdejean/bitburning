@@ -67,6 +67,7 @@ export function calculateHWGWFarm (ns, target, threads, opsBuffer = DEFAULT_OPS_
   batchCalculations.moneyPerSecond = batchCalculations.moneyPerCycle / batchCycleTime * MILLISECONDS_IN_A_SECOND
   batchCalculations.cycleTime = batchCycleTime
   batchCalculations.batches = idealBatchCount
+  batchCalculations.type = 'HWGW'
 
   return batchCalculations
 }

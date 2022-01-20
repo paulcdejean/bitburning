@@ -90,11 +90,11 @@ export function quadHackFarmTarget (ns, target, threads) {
       args: [FARM_PORT, target, 0, 'hack', 4]
     }
   ]
-  batchRemotes(ns, remotes, remoteRam)
+  // batchRemotes(ns, remotes, remoteRam)
 
   // Launch daemon
   ns.tprint('Launching daemon')
   const daemonArgs = [daemonFilename, HOME, 1, target, farmCalculation.hackThreads]
-  ns.exec(...daemonArgs)
+  // ns.exec(...daemonArgs)
   return daemonArgs
 }

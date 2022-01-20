@@ -30,5 +30,5 @@ export function calculateQuadHackFarm (ns, target, threads, opsBuffer = DEFAULT_
   }
 
   // Just a single batch, with 4 hacks per thread
-  return calculateQuadHackBatch(ns, target, threads, 4, opsBuffer, DEFAULT_CYCLE_BUFFER)
+  return calculateQuadHackBatch(ns, target, threads, 4, opsBuffer, cycleBuffer)
 }

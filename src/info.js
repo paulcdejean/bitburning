@@ -40,4 +40,5 @@ export function info (ns, target) {
   ns.tprint('Grow calls required per hack ', ns.growthAnalyze(target, 1 + hackRate))
   ns.tprint('Grow calls required to double ', ns.growthAnalyze(target, 2))
   ns.tprint('Grow calls required to max ', ns.growthAnalyze(target, maxMoney / currentMoney))
+  ns.tprint('Hack chance ', ns.hackAnalyzeChance(target))
 }

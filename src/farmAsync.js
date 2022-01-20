@@ -7,10 +7,13 @@ import { aquireLockAsync } from './lib/aquireLockAsync.js'
 import { releaseLockAsync } from './lib/releaseLockAsync.js'
 import { getNodes } from './lib/getNodes.js'
 import { getAvailableThreads } from './lib/getAvailableThreads.js'
+import { calculateQuadHackFarm } from './lib/calculateQuadHackFarm.js'
+import { calculateHWGWFarm } from './lib/calculateHWGWFarm.js'
 
 import { weakenTarget } from './actions/weakenTarget.js'
 import { growTarget } from './actions/growTarget.js'
 import { quadHackFarmTarget } from './actions/quadHackFarmTarget.js'
+import { hwgwFarmTarget } from './actions/hwgwFarmTarget.js'
 
 import {
   HACK_REMOTE_FILE,
@@ -19,7 +22,7 @@ import {
 } from './lib/constants.js'
 
 /**
- * Wraps quadHack allowing it to be called from the command line
+ * Wraps farm allowing it to be called from the command line
  *
  * @param {NS} ns NS
  */
@@ -34,18 +37,18 @@ export async function main (ns) {
     threads = ns.args[1]
   }
 
-  await quadHackAsync(ns, ns.args[0], threads)
+  await farmAsync(ns, ns.args[0], threads)
   await releaseLockAsync(ns)
 }
 
 /**
- * Farms the target using a single batch quad hack method.
+ * Farms the target using the best calculated method
  *
  * @param {NS} ns NS
  * @param target The target to quadhack farm
  * @param threads The number of threads to quadhack with
  */
-export async function quadHackAsync (ns, target, threads) {
+export async function farmAsync (ns, target, threads) {
   if (ns === undefined) {
     throw new GuardError('ns is required')
   }
@@ -69,5 +72,17 @@ export async function quadHackAsync (ns, target, threads) {
     ns.tprint(target, ' is already at maximum money')
   }
 
-  await quadHackFarmTarget(ns, target, threads)
+  const farms = []
+  farms.push(calculateQuadHackFarm(ns, target, threads))
+  farms.push(calculateHWGWFarm(ns, target, threads))
+
+  farms.sort((lhv, rhv) => rhv.moneyPerSecond - lhv.moneyPerSecond)
+
+  if (farms[0].type === 'QUAD') {
+    quadHackFarmTarget(ns, target, threads)
+  } else if (farms[0].type === 'HWGW') {
+    hwgwFarmTarget(ns, target, threads)
+  } else {
+    ns.tprint('ERROR: Unknown farming type')
+  }
 }

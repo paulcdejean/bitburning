@@ -7,7 +7,8 @@
  * @param {NS} ns NS
  */
 export async function main (ns) {
-  // const threads = ns.args[0]
+  // eslint-disable-next-line no-unused-vars
+  const threads = ns.args[0]
   // subBatchNumber = ns.args[1]
   const daemonPort = ns.args[2]
   const target = ns.args[3]

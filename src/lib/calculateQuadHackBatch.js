@@ -119,6 +119,7 @@ export function calculateQuadHackBatch (ns, target, threads, hacksPerThread = 1,
   result.hackThreads = hackThreads
   result.totalThreads = totalThreads
   result.cycleTime = cycleTime
+  result.type = 'QUAD'
 
   return result
 }

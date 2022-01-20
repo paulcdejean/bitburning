@@ -22,22 +22,22 @@ import {
 } from './lib/constants.js'
 
 /**
- * Farms enough to buy the TOR router and BruteSSH.exe
+ * Farms enough to buy relaySMTP.exe
  *
  * @param {NS} ns NS
  */
-export async function goalOneAsync (ns) {
+export async function goalThreeAsync (ns) {
   if (ns === undefined) {
     throw new GuardError('ns is required')
   }
 
   // There's an AUG that allows you to start with this program
-  if (ns.fileExists('BruteSSH.exe')) {
-    ns.tprint('BruteSSH.exe detected, skipping goal!')
+  if (ns.fileExists('relaySMTP.exe')) {
+    ns.tprint('relaySMTP.exe detected, skipping goal!')
     return
   }
 
-  if (ns.getServerMoneyAvailable(HOME) < 700000) {
+  if (ns.getServerMoneyAvailable(HOME) < 5000000) {
     await aquireLockAsync(ns)
     const nodes = getNodes(ns)
     const remoteRam = getRemoteRam(ns, WEAKEN_REMOTE_FILE, GROW_REMOTE_FILE, HACK_REMOTE_FILE)
@@ -55,21 +55,21 @@ export async function goalOneAsync (ns) {
     await farmAsync(ns, score[0].name, threads)
     await releaseLockAsync(ns)
 
-    ns.tprint('Waiting for you to have enough money to buy the TOR router and BruteSSH.exe')
-    while (ns.getServerMoneyAvailable(HOME) < 700000) {
+    ns.tprint('Waiting for you to have enough money to buy relaySMTP.exe')
+    while (ns.getServerMoneyAvailable(HOME) < 5000000) {
       await ns.asleep(10)
     }
 
     await stopFarmsAsync(ns)
   }
 
-  ns.tprint('Waiting for you to buy BruteSSH.exe, you should have enough')
-  while (!ns.fileExists('BruteSSH.exe')) {
+  ns.tprint('Waiting for you to buy relaySMTP.exe, you should have enough')
+  while (!ns.fileExists('relaySMTP.exe')) {
     await ns.asleep(1000)
   }
-  ns.tprint('Thanks for buying BruteSSH.exe updating nodes')
+  ns.tprint('Thanks for buying relaySMTP.exe updating nodes')
   await updateNodesAsync(ns)
-  ns.tprint('Goal 1 is completed')
+  ns.tprint('Goal 3 is completed')
 }
 
 /**
@@ -78,5 +78,5 @@ export async function goalOneAsync (ns) {
  * @param {NS} ns NS
  */
 export async function main (ns) {
-  await goalOneAsync(ns)
+  await goalThreeAsync(ns)
 }

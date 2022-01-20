@@ -57,7 +57,10 @@ export function hiscore (ns, nodes, threads) {
   const result = []
 
   for (const node in nodes) {
-    if (nodes[node].hackerLevel <= ns.getHackingLevel()) {
+    if (nodes[node].hackerLevel <= ns.getHackingLevel() &&
+        nodes[node].root &&
+        nodes[node].maxMoney > 0
+    ) {
       const quadHackResults = calculateQuadHackFarm(ns, node, threads)
       if (quadHackResults.moneyPerSecond > 0) {
         result.push({

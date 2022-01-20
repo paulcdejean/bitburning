@@ -74,7 +74,6 @@ export function hwgwFarmTarget (ns, target, threads) {
 
   // Launch remotes
   const remotes = []
-  ns.tprint(farmCalculation)
 
   let batch = 0
   while (batch < farmCalculation.batches) {
