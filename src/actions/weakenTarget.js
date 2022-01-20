@@ -77,7 +77,7 @@ export function weakenTarget (ns, target, threads, cycleBuffer = DEFAULT_CYCLE_B
   const remotes = [{
     name: WEAKEN_REMOTE_FILE,
     threads: threads,
-    args: [WEAKEN_PORT, target, 0]
+    args: [WEAKEN_PORT, target, 0, 'weaken']
   }]
   batchRemotes(ns, remotes, remoteRam)
 

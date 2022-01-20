@@ -1,5 +1,4 @@
 /* eslint-disable bitburning/export-filename */
-/* eslint-disable bitburning/require-guards */
 
 /**
  * Weakens a target, is under the control of a daemon given by the daemonPort
@@ -13,6 +12,7 @@ export async function main (ns) {
   const daemonPort = ns.args[2]
   const target = ns.args[3]
   const batch = ns.args[4]
+  const operation = ns.args[5]
 
   let portString
   let portData
@@ -41,7 +41,7 @@ export async function main (ns) {
     cycle = cycle + 1
     ns.print('Starting cycle ', cycle, ' on batch ', batch)
 
-    const weakenSleep = portData[target].batches[batch].weaken
+    const weakenSleep = portData[target].batches[batch][operation]
     await ns.asleep(weakenSleep)
 
     await ns.weaken(target)

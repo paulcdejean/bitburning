@@ -64,8 +64,6 @@ export function calculateQuadHackBatch (ns, target, threads, hacksPerThread = 1,
     totalThreads = hackThreads + growThreads + weakenThreads
   }
 
-  // Hacking threads equaling zero here, means we don't have enough
-
   // Once more to get the final result
   hackThreads = hackThreads - 1
   const percentToLeave = Math.pow((1 - (targetInfo.hackPower * hackThreads)), hacksPerThread)

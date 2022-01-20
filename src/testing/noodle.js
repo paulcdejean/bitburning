@@ -47,9 +47,22 @@ export function noodle (ns) {
   ns.tprint('Quad hack has income ', ns.nFormat(quadHackIncome, '0.000a'))
   ns.tprint('HWGW farm has income ', ns.nFormat(hwgwFarm.moneyPerSecond, '0.000a'), ' and batch count ', hwgwFarm.batches)
 
-  ns.tprint('Thread count = 5000')
-  hwgwFarm = calculateHWGWFarm(ns, target, 5000)
-  quadHackIncome = calculateQuadHackFarm(ns, target, 5000, 4).moneyPerSecond
+  ns.tprint('Thread count = 775')
+  hwgwFarm = calculateHWGWFarm(ns, target, 775)
+  quadHackIncome = calculateQuadHackFarm(ns, target, 775, 4).moneyPerSecond
   ns.tprint('Quad hack has income ', ns.nFormat(quadHackIncome, '0.000a'))
   ns.tprint('HWGW farm has income ', ns.nFormat(hwgwFarm.moneyPerSecond, '0.000a'), ' and batch count ', hwgwFarm.batches)
+
+  ns.tprint('Thread count = 1485')
+  hwgwFarm = calculateHWGWFarm(ns, target, 1485)
+  quadHackIncome = calculateQuadHackFarm(ns, target, 1485, 4).moneyPerSecond
+  ns.tprint('Quad hack has income ', ns.nFormat(quadHackIncome, '0.000a'))
+  ns.tprint('HWGW farm has income ', ns.nFormat(hwgwFarm.moneyPerSecond, '0.000a'), ' and batch count ', hwgwFarm.batches)
+
+  ns.tprint('Thread count = 6165')
+  hwgwFarm = calculateHWGWFarm(ns, target, 6165)
+  quadHackIncome = calculateQuadHackFarm(ns, target, 6165, 4).moneyPerSecond
+  ns.tprint('Quad hack has income ', ns.nFormat(quadHackIncome, '0.000a'))
+  ns.tprint('HWGW farm has income ', ns.nFormat(hwgwFarm.moneyPerSecond, '0.000a'), ' and batch count ', hwgwFarm.batches)
+  ns.tprint(hwgwFarm)
 }

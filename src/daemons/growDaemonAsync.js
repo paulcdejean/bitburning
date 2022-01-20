@@ -80,7 +80,7 @@ export async function growDaemonAsync (ns, target, cycleBuffer = DEFAULT_CYCLE_B
       break
     } else {
       ns.print('After ', cycle, ' cycles ', target, ' sec is ', currentSecurity, ' and min sec is ', minSecurity)
-      ns.print('After ', cycle, ' cycles ', target, ' money is ', currentMoney, ' out of ', maxMoney)
+      ns.print('After ', cycle, ' cycles ', target, ' money is ', ns.nFormat(currentMoney, '0.000a'), ' out of ', ns.nFormat(maxMoney, '0.000a'))
     }
   }
 }

@@ -101,12 +101,12 @@ export function growTarget (ns, target, threads, cycleBuffer = DEFAULT_CYCLE_BUF
     {
       name: GROW_REMOTE_FILE,
       threads: growThreads,
-      args: [GROW_PORT, target, 0]
+      args: [GROW_PORT, target, 0, 'grow']
     },
     {
       name: WEAKEN_REMOTE_FILE,
       threads: weakenThreads,
-      args: [GROW_PORT, target, 0]
+      args: [GROW_PORT, target, 0, 'weaken']
     }
   ]
   batchRemotes(ns, remotes, remoteRam)

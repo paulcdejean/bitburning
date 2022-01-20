@@ -3,6 +3,13 @@ import { GuardError } from './errors/GuardError.js'
 import { getNodes } from './lib/getNodes.js'
 import { getAvailableThreads } from './lib/getAvailableThreads.js'
 import { calculateQuadHackFarm } from './lib/calculateQuadHackFarm.js'
+import { getRemoteRam } from './lib/getRemoteRam.js'
+
+import {
+  WEAKEN_REMOTE_FILE,
+  GROW_REMOTE_FILE,
+  HACK_REMOTE_FILE
+} from './lib/constants.js'
 
 /**
  * Echos out information on what the best server for hacking is to the command line.
@@ -13,7 +20,8 @@ export async function main (ns) {
   const nodes = getNodes(ns)
   let threads = ns.args[0]
   if (!threads) {
-    threads = getAvailableThreads(ns, nodes, 1.75)
+    const remoteRam = getRemoteRam(ns, WEAKEN_REMOTE_FILE, GROW_REMOTE_FILE, HACK_REMOTE_FILE)
+    threads = getAvailableThreads(ns, nodes, remoteRam)
   }
 
   ns.tprint('Available threads = ', threads)
