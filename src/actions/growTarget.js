@@ -27,7 +27,7 @@ import {
  * @param {NS} ns NS
  */
 export async function main (ns) {
-  const remoteRam = getRemoteRam(ns, WEAKEN_REMOTE_FILE)
+  const remoteRam = getRemoteRam(ns, WEAKEN_REMOTE_FILE, GROW_REMOTE_FILE)
 
   await aquireLockAsync(ns)
   const nodes = getNodes(ns)
