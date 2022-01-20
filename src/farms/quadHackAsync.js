@@ -34,8 +34,6 @@ export async function main (ns) {
     threads = ns.args[1]
   }
 
-  quadHackFarmTarget(ns, ns.args[0], threads)
-
   await quadHackAsync(ns, ns.args[0], threads)
   await releaseLockAsync(ns)
 }
