@@ -67,7 +67,7 @@ export async function farmAsync (ns, target, threads) {
     ns.tprint(target, ' is already at minimum secrutiy')
   }
 
-  if (info.currentMoney >= info.maxMoney * MAX_MONEY_ALLOWANCE) {
+  if (info.currentMoney < info.maxMoney * MAX_MONEY_ALLOWANCE) {
     await waitForDaemonAsync(ns, growTarget(ns, target, threads))
   } else {
     ns.tprint(target, ' is already at maximum money')

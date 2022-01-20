@@ -9,7 +9,8 @@ import {
   FARM_PORT,
   FARM_STOP_PORT,
   STOP_FARMS,
-  FARMS_STOPPED
+  FARMS_STOPPED,
+  MAX_MONEY_ALLOWANCE
 } from './lib/constants.js'
 
 /**
@@ -86,7 +87,7 @@ export async function quadHackFarmDaemonAsync (ns, target, hackThreads, cycleBuf
       ns.tprint('WARNING: during quad hack farm operation, security of ', target,
         ' has drifted from minimum of ', targetInfo.minSecurity, ' to ', currentSecurity)
     }
-    if (currentMoney < targetInfo.maxMoney) {
+    if (currentMoney <= targetInfo.maxMoney * MAX_MONEY_ALLOWANCE) {
       ns.tprint('WARNING: during quad hack farm operation, money of ', target,
         ' has drifted from max of ', targetInfo.maxMoney, ' to ', currentMoney)
     }
