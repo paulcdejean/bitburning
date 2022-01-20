@@ -11,11 +11,14 @@ import { calculateQuadHackFarm } from './lib/calculateQuadHackFarm.js'
  */
 export async function main (ns) {
   const nodes = getNodes(ns)
-  const availableThreads = getAvailableThreads(ns, nodes, 1.75)
+  let threads = ns.args[0]
+  if (!threads) {
+    threads = getAvailableThreads(ns, nodes, 1.75)
+  }
 
-  ns.tprint('Available threads = ', availableThreads)
+  ns.tprint('Available threads = ', threads)
 
-  const scoreArray = hiscore(ns, nodes, availableThreads)
+  const scoreArray = hiscore(ns, nodes, threads)
 
   for (const score of scoreArray) {
     ns.tprint('Farm ', score.farmType, ' on ', score.name,
