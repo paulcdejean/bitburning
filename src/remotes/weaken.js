@@ -46,6 +46,6 @@ export async function main (ns) {
     await ns.asleep(weakenSleep)
 
     await ns.weaken(target)
-    // ns.tprint('Batch ', batch, ' weaken ', threads, ' threads: ', ns.nFormat(ns.getServerMoneyAvailable(target), '0.000a'))
+    ns.tprint('Batch ', batch, ' weaken ', threads, ' threads: ', ns.getServerSecurityLevel(target))
   }
 }

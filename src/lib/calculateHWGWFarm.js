@@ -39,7 +39,7 @@ export function calculateHWGWFarm (ns, target, threads, opsBuffer = DEFAULT_OPS_
   // This is because the first hack is started when the first hack starts, and the last hack is started before the first hack ends
   // Also note that the max batches can shrink over time as hacking level goes up and hack times shrink
   // So the daemon is also calculating this and disabling batches as needed. It can disable batches but not adjust batch sizes.
-  const maximumBatches = Math.floor(targetInfo.hackTime / (opsBuffer * 4))
+  const maximumBatches = Math.floor(targetInfo.hackTime / (opsBuffer * 4)) - 1
 
   let batchCount = maximumBatches
   let idealBatchCount = 0
@@ -62,10 +62,10 @@ export function calculateHWGWFarm (ns, target, threads, opsBuffer = DEFAULT_OPS_
   const batchSize = Math.floor(threads / idealBatchCount)
   const batchCalculations = calculateHWGWBatch(ns, target, batchSize, 1, opsBuffer, cycleBuffer)
 
-  const batchCycleTime = batchCalculations.cycleTime + (idealBatchCount * opsBuffer)
+  const farmCycleTime = batchCalculations.cycleTime + (idealBatchCount * opsBuffer * 4) + (opsBuffer * 4) // final bit is the bonus batch
   batchCalculations.moneyPerCycle = batchCalculations.moneyPerCycle * idealBatchCount
-  batchCalculations.moneyPerSecond = batchCalculations.moneyPerCycle / batchCycleTime * MILLISECONDS_IN_A_SECOND
-  batchCalculations.cycleTime = batchCycleTime
+  batchCalculations.moneyPerSecond = batchCalculations.moneyPerCycle / farmCycleTime * MILLISECONDS_IN_A_SECOND
+  batchCalculations.cycleTime = farmCycleTime
   batchCalculations.batches = idealBatchCount
   batchCalculations.type = 'HWGW'
 

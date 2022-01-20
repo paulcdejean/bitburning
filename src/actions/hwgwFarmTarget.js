@@ -101,11 +101,33 @@ export function hwgwFarmTarget (ns, target, threads) {
     batch = batch + 1
   }
 
+  const remainingThreads = threads % farmCalculation.batches
+  ns.tprint('Bonus threads: ', remainingThreads)
+
+  // Bonus batch! This is to counteract annoying levelup drift
+  const weakenSecurityPower = ns.weakenAnalyze(1)
+  const growSecurityPower = ns.growthAnalyzeSecurity(1)
+  const weakenRatio = growSecurityPower / (weakenSecurityPower + growSecurityPower)
+  const growRatio = weakenSecurityPower / (weakenSecurityPower + growSecurityPower)
+  const bonusGrowThreads = Math.floor(remainingThreads * growRatio)
+  const bonusWeakenThreads = Math.ceil(remainingThreads * weakenRatio)
+
+  remotes.push({
+    name: GROW_REMOTE_FILE,
+    threads: bonusGrowThreads,
+    args: [FARM_PORT, target, batch, 'grow']
+  })
+  remotes.push({
+    name: WEAKEN_REMOTE_FILE,
+    threads: bonusWeakenThreads,
+    args: [FARM_PORT, target, batch, 'growWeaken']
+  })
+
   batchRemotes(ns, remotes, remoteRam)
 
   // Launch daemon
   ns.tprint('Launching daemon')
-  const daemonArgs = [daemonFilename, HOME, 1, target, farmCalculation.batches]
+  const daemonArgs = [daemonFilename, HOME, 1, target, batch]
   ns.exec(...daemonArgs)
   return daemonArgs
 }

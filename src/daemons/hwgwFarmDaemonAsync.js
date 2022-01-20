@@ -9,7 +9,8 @@ import {
   FARM_PORT,
   FARM_STOP_PORT,
   STOP_FARMS,
-  FARMS_STOPPED
+  FARMS_STOPPED,
+  MAX_MONEY_ALLOWANCE
 } from './lib/constants.js'
 
 /**
@@ -55,7 +56,7 @@ export async function hwgwFarmDaemonAsync (ns, target, batches, cycleBuffer = DE
     const hackWeakenSleep = 0
     const growSleep = targetInfo.weakenTime - targetInfo.growTime + opsBuffer
     const growWeakenSleep = opsBuffer * 2
-    const cycleTime = targetInfo.weakenTime + (batches * opsBuffer * 4) + cycleBuffer
+    const cycleTime = targetInfo.weakenTime + (batches * opsBuffer * 4) + (opsBuffer * 4) + cycleBuffer
 
     let batch = 0
     while (batch < batches) {
@@ -67,6 +68,14 @@ export async function hwgwFarmDaemonAsync (ns, target, batches, cycleBuffer = DE
       })
       batch = batch + 1
     }
+
+    // Bonus batch
+    batchData.push({
+      hack: hackSleep + (opsBuffer * batch * 4),
+      hackWeaken: hackWeakenSleep + (opsBuffer * batch * 4),
+      grow: growSleep + (opsBuffer * batch * 4),
+      growWeaken: growWeakenSleep + (opsBuffer * batch * 4)
+    })
 
     const cycleData = {
       cycle: cycle,
@@ -87,7 +96,7 @@ export async function hwgwFarmDaemonAsync (ns, target, batches, cycleBuffer = DE
       ns.tprint('WARNING: during HWGW farm operation, security of ', target,
         ' has drifted from minimum of ', targetInfo.minSecurity, ' to ', currentSecurity)
     }
-    if (currentMoney < targetInfo.maxMoney) {
+    if (currentMoney <= targetInfo.maxMoney * MAX_MONEY_ALLOWANCE) {
       ns.tprint('WARNING: during HWGW farm operation, money of ', target,
         ' has drifted from max of ', targetInfo.maxMoney, ' to ', currentMoney)
     }
