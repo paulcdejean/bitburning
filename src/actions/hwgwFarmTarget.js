@@ -102,7 +102,6 @@ export function hwgwFarmTarget (ns, target, threads) {
     batch = batch + 1
   }
 
-  ns.tprint(remotes)
   batchRemotes(ns, remotes, remoteRam)
 
   // Launch daemon

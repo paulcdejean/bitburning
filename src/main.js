@@ -19,7 +19,7 @@ export async function main (ns) {
   await initPortsAsync(ns)
   await scpRemotesAsync(ns)
 
-  await waitForExecAsync(ns, ns.exec('/goals/goalOneAsync.js', HOME))
+  // await waitForExecAsync(ns, ns.exec('/goals/goalOneAsync.js', HOME))
   // await waitForExecAsync(ns, ns.exec('/goals/goalTwoAsync.js', HOME))
   // await waitForExecAsync(ns, ns.exec('/goals/goalThreeAsync.js', HOME))
   // await waitForExecAsync(ns, ns.exec('/goals/goalFourAsync.js', HOME))

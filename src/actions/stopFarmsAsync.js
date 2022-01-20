@@ -30,9 +30,9 @@ export async function stopFarmsAsync (ns) {
   await ns.writePort(FARM_STOP_PORT, STOP_FARMS)
 
   while (ns.peek(FARM_STOP_PORT) !== FARMS_STOPPED) {
-    await ns.asleep(1000)
+    await ns.asleep(100)
   }
   ns.readPort(FARM_STOP_PORT)
-  await ns.asleep(1000) // Paranoia
+  await ns.asleep(100) // Paranoia
   ns.tprint('Farms stopped')
 }
