@@ -3,6 +3,7 @@ import { GuardError } from './errors/GuardError.js'
 import { getNodes } from './lib/getNodes.js'
 import { getAvailableThreads } from './lib/getAvailableThreads.js'
 import { calculateQuadHackFarm } from './lib/calculateQuadHackFarm.js'
+import { calculateHWGWFarm } from './lib/calculateHWGWFarm.js'
 import { getRemoteRam } from './lib/getRemoteRam.js'
 
 import {
@@ -64,6 +65,17 @@ export function hiscore (ns, nodes, threads) {
           farmType: 'QUAD',
           moneyPerSecond: quadHackResults.moneyPerSecond,
           cycleTime: quadHackResults.cycleTime,
+          threads: threads
+        })
+      }
+
+      const hwgwFarmResults = calculateHWGWFarm(ns, node, threads)
+      if (hwgwFarmResults.moneyPerSecond > 0) {
+        result.push({
+          name: node,
+          farmType: 'HWGW',
+          moneyPerSecond: hwgwFarmResults.moneyPerSecond,
+          cycleTime: hwgwFarmResults.cycleTime,
           threads: threads
         })
       }

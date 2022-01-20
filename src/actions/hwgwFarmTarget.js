@@ -74,6 +74,7 @@ export function hwgwFarmTarget (ns, target, threads) {
 
   // Launch remotes
   const remotes = []
+  ns.tprint(farmCalculation)
 
   let batch = 0
   while (batch < farmCalculation.batches) {
@@ -84,12 +85,12 @@ export function hwgwFarmTarget (ns, target, threads) {
     })
     remotes.push({
       name: WEAKEN_REMOTE_FILE,
-      threads: farmCalculation.weakenThreads,
+      threads: farmCalculation.hackWeakenThreads,
       args: [FARM_PORT, target, batch, 'hackWeaken']
     })
     remotes.push({
       name: WEAKEN_REMOTE_FILE,
-      threads: farmCalculation.weakenThreads,
+      threads: farmCalculation.growWeakenThreads,
       args: [FARM_PORT, target, batch, 'growWeaken']
     })
     remotes.push({
@@ -101,6 +102,7 @@ export function hwgwFarmTarget (ns, target, threads) {
     batch = batch + 1
   }
 
+  ns.tprint(remotes)
   batchRemotes(ns, remotes, remoteRam)
 
   // Launch daemon

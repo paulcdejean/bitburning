@@ -83,11 +83,11 @@ export async function quadHackFarmDaemonAsync (ns, target, hackThreads, cycleBuf
     const currentMoney = ns.getServerMoneyAvailable(target)
 
     if (currentSecurity !== targetInfo.minSecurity) {
-      ns.tprint('WARNING: during single hack farm operation, security of ', target,
+      ns.tprint('WARNING: during quad hack farm operation, security of ', target,
         ' has drifted from minimum of ', targetInfo.minSecurity, ' to ', currentSecurity)
     }
     if (currentMoney < targetInfo.maxMoney) {
-      ns.tprint('WARNING: during single hack farm operation, money of ', target,
+      ns.tprint('WARNING: during quad hack farm operation, money of ', target,
         ' has drifted from max of ', targetInfo.maxMoney, ' to ', currentMoney)
     }
 
