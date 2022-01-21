@@ -5,6 +5,7 @@ import { getAvailableThreads } from './lib/getAvailableThreads.js'
 import { calculateQuadHackFarm } from './lib/calculateQuadHackFarm.js'
 import { calculateHWGWFarm } from './lib/calculateHWGWFarm.js'
 import { getRemoteRam } from './lib/getRemoteRam.js'
+import { calculateGrowCycles } from './lib/calculateGrowCycles.js'
 
 import {
   WEAKEN_REMOTE_FILE,
@@ -32,7 +33,8 @@ export async function main (ns) {
   for (const score of scoreArray) {
     ns.tprint('Farm ', score.farmType, ' on ', score.name,
       ' earns ', ns.nFormat(score.moneyPerSecond, '0.000a'),
-      '/s with cycle time ', ns.tFormat(score.cycleTime))
+      '/s with cycle time ', ns.tFormat(score.cycleTime),
+      ' and ', score.growCycles, ' cycles to grow')
   }
 }
 
@@ -61,6 +63,8 @@ export function hiscore (ns, nodes, threads) {
         nodes[node].root &&
         nodes[node].maxMoney > 0
     ) {
+      const growCycles = calculateGrowCycles(ns, node, threads)
+
       const quadHackResults = calculateQuadHackFarm(ns, node, threads)
       if (quadHackResults.moneyPerSecond > 0) {
         result.push({
@@ -68,7 +72,8 @@ export function hiscore (ns, nodes, threads) {
           farmType: 'QUAD',
           moneyPerSecond: quadHackResults.moneyPerSecond,
           cycleTime: quadHackResults.cycleTime,
-          threads: threads
+          threads: threads,
+          growCycles: growCycles
         })
       }
 
@@ -79,7 +84,8 @@ export function hiscore (ns, nodes, threads) {
           farmType: 'HWGW',
           moneyPerSecond: hwgwFarmResults.moneyPerSecond,
           cycleTime: hwgwFarmResults.cycleTime,
-          threads: threads
+          threads: threads,
+          growCycles: growCycles
         })
       }
     }

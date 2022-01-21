@@ -46,13 +46,15 @@ export async function goalFourAsync (ns) {
     // Targeting
     // Out of the top 5, pick the method that has the shortest cycle time.
     const score = hiscore(ns, nodes, threads)
-    score.splice(5, score.length - 5)
-    score.sort((lhv, rhv) => lhv.cycleTime - rhv.cycleTime)
+    const newScore = score.filter(target => target.growCycles <= 5)
+    ns.tprint(newScore)
+    newScore.splice(5, newScore.length - 5)
+    newScore.sort((lhv, rhv) => lhv.cycleTime - rhv.cycleTime)
 
-    ns.tprint('Farming ', score[0].name, ' with ', score[0].farmType, '. Expected income is ',
-      ns.nFormat(score[0].moneyPerSecond, '0.000a'), '/s and cycle time is ', ns.tFormat(score[0].cycleTime))
+    ns.tprint('Farming ', newScore[0].name, ' with ', newScore[0].farmType, '. Expected income is ',
+      ns.nFormat(newScore[0].moneyPerSecond, '0.000a'), '/s and cycle time is ', ns.tFormat(newScore[0].cycleTime))
 
-    await farmAsync(ns, score[0].name, threads)
+    await farmAsync(ns, newScore[0].name, threads)
     await releaseLockAsync(ns)
 
     ns.tprint('Waiting for you to have enough money to buy HTTPWorm.exe')
