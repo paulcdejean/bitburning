@@ -26,7 +26,6 @@ export function getTargetInfo (ns, target) {
   info.hackTime = ns.getHackTime(target)
   info.hackPower = ns.hackAnalyze(target)
   info.requiredSkill = serverInfo.requiredHackingSkill
-  info.hackChance = ns.hackAnalyzeChance(target)
 
   return info
 }

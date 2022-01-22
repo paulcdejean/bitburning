@@ -7,8 +7,7 @@ import {
   MATH_DEBUGGING,
   DEFAULT_CYCLE_BUFFER,
   DEFAULT_OPS_BUFFER,
-  MILLISECONDS_IN_A_SECOND,
-  ACCEPTABLE_MAXHACK_PROBABILITY
+  MILLISECONDS_IN_A_SECOND
 } from './lib/constants.js'
 
 /**
@@ -91,19 +90,8 @@ export function calculateHWGWBatch (ns, target, threads, opsBuffer = DEFAULT_OPS
     ns.tprint('totalThreads = ', totalThreads)
   }
 
-  const hackSubBatches = Math.ceil(Math.log(ACCEPTABLE_MAXHACK_PROBABILITY) / Math.log(targetInfo.hackChance))
-  const hackSubBatchSize = Math.floor(hackThreads / hackSubBatches)
-  const hackSubBatchesCorrected = Math.floor(hackThreads / hackSubBatchSize)
-  const hackSubBatchRemainder = hackThreads % hackSubBatchSize
-
-  if (MATH_DEBUGGING) {
-    ns.tprint('hackSubBatches = ', hackSubBatches)
-    ns.tprint('hackSubBatchSize = ', hackSubBatchSize)
-    ns.tprint('hackSubBatchesCorrected = ', hackSubBatchesCorrected)
-    ns.tprint('hackSubBatchRemainder = ', hackSubBatchRemainder)
-  }
-
   const cycleTime = targetInfo.weakenTime + cycleBuffer
+
   const moneyPerCycle = targetInfo.maxMoney * (1 - percentToLeave)
   const moneyPerSecond = moneyPerCycle / cycleTime * MILLISECONDS_IN_A_SECOND
   let moneyPerSecondPerThread
@@ -126,9 +114,6 @@ export function calculateHWGWBatch (ns, target, threads, opsBuffer = DEFAULT_OPS
   result.hackThreads = hackThreads
   result.totalThreads = totalThreads
   result.cycleTime = cycleTime
-  result.hackSubBatches = hackSubBatchesCorrected
-  result.hackSubBatchSize = hackSubBatchSize
-  result.hackSubBatchRemainder = hackSubBatchRemainder
 
   return result
 }

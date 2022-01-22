@@ -71,8 +71,6 @@ export function hwgwFarmTarget (ns, target, threads) {
 
   ns.tprint('Excepted income is ', ns.nFormat(farmCalculation.moneyPerSecond, '0.000a'),
     '/s and expected cycle time is ', ns.tFormat(farmCalculation.cycleTime))
-  ns.tprint('Hack threads are ', farmCalculation.hackThreads, ', grow threads are ', farmCalculation.growThreads)
-  ns.tprint('Hacks are split into ', farmCalculation.hackSubBatches, ' sub batches')
 
   // Launch remotes
   const remotes = []
@@ -94,21 +92,10 @@ export function hwgwFarmTarget (ns, target, threads) {
       threads: farmCalculation.growWeakenThreads,
       args: [FARM_PORT, target, batch, 'growWeaken']
     })
-
-    let hackSubBatch = 0
-    while (hackSubBatch < farmCalculation.hackSubBatches) {
-      remotes.push({
-        name: HACK_REMOTE_FILE,
-        threads: farmCalculation.hackSubBatchSize,
-        args: [FARM_PORT, target, batch, 'hack', 1, hackSubBatch]
-      })
-      hackSubBatch = hackSubBatch + 1
-    }
-
     remotes.push({
       name: HACK_REMOTE_FILE,
-      threads: farmCalculation.hackSubBatchRemainder,
-      args: [FARM_PORT, target, batch, 'hack', 1, hackSubBatch]
+      threads: farmCalculation.hackThreads,
+      args: [FARM_PORT, target, batch, 'hack', 1]
     })
 
     batch = batch + 1
@@ -139,7 +126,6 @@ export function hwgwFarmTarget (ns, target, threads) {
     })
   }
 
-  ns.tprint(remotes)
   batchRemotes(ns, remotes, remoteRam)
 
   // Launch daemon
