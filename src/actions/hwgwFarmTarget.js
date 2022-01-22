@@ -69,6 +69,7 @@ export function hwgwFarmTarget (ns, target, threads) {
   const remoteRam = getRemoteRam(ns, WEAKEN_REMOTE_FILE, GROW_REMOTE_FILE, HACK_REMOTE_FILE)
   const farmCalculation = calculateHWGWFarm(ns, target, threads)
 
+  ns.tprint('Total actual threads are ', farmCalculation.batches * farmCalculation.totalThreads)
   ns.tprint('Excepted income is ', ns.nFormat(farmCalculation.moneyPerSecond, '0.000a'),
     '/s and expected cycle time is ', ns.tFormat(farmCalculation.cycleTime))
 

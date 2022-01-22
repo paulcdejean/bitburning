@@ -62,7 +62,7 @@ export function calculateHWGWFarm (ns, target, threads, opsBuffer = DEFAULT_OPS_
   }
 
   const batchSize = Math.floor(threads / idealBatchCount)
-  const batchCalculations = calculateHWGWBatch(ns, target, batchSize, opsBuffer, cycleBuffer)
+  const batchCalculations = calculateHWGWBatch(ns, target, batchSize, 0, opsBuffer, cycleBuffer)
 
   const farmCycleTime = batchCalculations.cycleTime + (idealBatchCount * opsBuffer * 4) + (opsBuffer * 4) // final bit is the bonus batch
   batchCalculations.moneyPerCycle = batchCalculations.moneyPerCycle * idealBatchCount
