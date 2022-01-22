@@ -49,10 +49,8 @@ export async function goalSevenAsync (ns) {
         const threads = getAvailableThreads(ns, nodes, remoteRam)
 
         // Targeting
-        // Out of the top 10, pick the method that has the shortest cycle time.
+        // Just pick the most money lol
         const score = hiscore(ns, nodes, threads)
-        score.splice(10, score.length - 10)
-        score.sort((lhv, rhv) => lhv.cycleTime - rhv.cycleTime)
 
         ns.tprint('Farming ', score[0].name, ' with ', score[0].farmType, '. Expected income is ',
           ns.nFormat(score[0].moneyPerSecond, '0.000a'), '/s and cycle time is ', ns.tFormat(score[0].cycleTime))

@@ -43,6 +43,8 @@ export async function hwgwFarmDaemonAsync (ns, target, batches, cycleBuffer = DE
     throw new GuardError('batches is required')
   }
 
+  const startingHackingLevel = ns.getHackingLevel()
+
   let cycle = 0
   ns.tprint('Starting hwgw farm daemon cycle 1 for ', target)
   while (true) {
@@ -102,6 +104,7 @@ export async function hwgwFarmDaemonAsync (ns, target, batches, cycleBuffer = DE
     }
 
     ns.tprint('After ', cycle, ' cycles ', target, ' money is ', ns.nFormat(currentMoney, '0.000a'), ' and security is ', currentSecurity)
+    ns.tprint('We have gained ', ns.getHackingLevel() - startingHackingLevel, ' hacking levels')
 
     // Check for terminating condition, which is a port signal
     if (ns.readPort(FARM_STOP_PORT) === STOP_FARMS) {

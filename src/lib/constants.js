@@ -30,6 +30,6 @@ export const HACK_REMOTE_FILE = '/remotes/hack.js'
 export const MAX_MONEY_ALLOWANCE = 0.99
 
 // The number of times its safe to level up during a HWGW farm or something
-export const SAFE_LEVELS_UP = 20
+export const SAFE_LEVELS_UP = 50
 
 export const PURCHASED_PREFIX = 'purchased'
