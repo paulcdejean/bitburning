@@ -19,7 +19,7 @@ export function buyServer (ns, maxPrice = Infinity) {
 
   let serverRam = ns.getPurchasedServerMaxRam()
 
-  while (ns.getPurchasedServerCost(serverRam) >= maxPrice) {
+  while (ns.getPurchasedServerCost(serverRam) > maxPrice) {
     serverRam = serverRam / 2
   }
 

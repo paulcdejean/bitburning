@@ -25,6 +25,7 @@ export async function main (ns) {
   await waitForExecAsync(ns, ns.exec('/goals/goalFourAsync.js', HOME))
   await waitForExecAsync(ns, ns.exec('/goals/goalFiveAsync.js', HOME))
   await waitForExecAsync(ns, ns.exec('/goals/goalSixAsync.js', HOME))
+  await waitForExecAsync(ns, ns.exec('/goals/goalSevenAsync.js', HOME))
 
   ns.disableLog('asleep')
   ns.tprint('All goals completed!')

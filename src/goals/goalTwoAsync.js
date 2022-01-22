@@ -70,7 +70,7 @@ export async function goalTwoAsync (ns) {
   }
   ns.tprint('Thanks for buying FTPCrack.exe updating nodes')
   await updateNodesAsync(ns)
-  ns.tprint('Goal 2 is completed')
+  ns.tprint('Goal 2 is completed at ', ns.tFormat(ns.getTimeSinceLastAug()))
 }
 
 /**

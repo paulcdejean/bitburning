@@ -69,7 +69,7 @@ export async function goalOneAsync (ns) {
   }
   ns.tprint('Thanks for buying BruteSSH.exe updating nodes')
   await updateNodesAsync(ns)
-  ns.tprint('Goal 1 is completed')
+  ns.tprint('Goal 1 is completed at ', ns.tFormat(ns.getTimeSinceLastAug()))
 }
 
 /**

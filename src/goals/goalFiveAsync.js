@@ -67,7 +67,7 @@ export async function goalFiveAsync (ns) {
   }
   ns.tprint('Thanks for buying SQLInject.exe updating nodes')
   await updateNodesAsync(ns)
-  ns.tprint('Goal 5 is completed')
+  ns.tprint('Goal 5 is completed at ', ns.tFormat(ns.getTimeSinceLastAug()))
 }
 
 /**

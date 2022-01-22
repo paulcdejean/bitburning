@@ -47,7 +47,6 @@ export async function goalFourAsync (ns) {
     // Out of the top 5, pick the method that has the shortest cycle time.
     const score = hiscore(ns, nodes, threads)
     const newScore = score.filter(target => target.growCycles <= 5)
-    ns.tprint(newScore)
     newScore.splice(5, newScore.length - 5)
     newScore.sort((lhv, rhv) => lhv.cycleTime - rhv.cycleTime)
 
@@ -71,7 +70,7 @@ export async function goalFourAsync (ns) {
   }
   ns.tprint('Thanks for buying HTTPWorm.exe updating nodes')
   await updateNodesAsync(ns)
-  ns.tprint('Goal 4 is completed')
+  ns.tprint('Goal 4 is completed at ', ns.tFormat(ns.getTimeSinceLastAug()))
 }
 
 /**

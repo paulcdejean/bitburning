@@ -77,12 +77,12 @@ export async function goalSixAsync (ns) {
     await scpRemotesAsync(ns)
 
     if (serverMaxCost > largestServerPrice) {
-      ns.tprint('Sucessfully purchased a max server, goal is complete')
+      ns.tprint('Sucessfully purchased a max server, goal is complete at ', ns.tFormat(ns.getTimeSinceLastAug()))
       return
     }
 
     if (ns.getPurchasedServers().length === ns.getPurchasedServerLimit()) {
-      ns.tprint('Max out purchased servers, goal is complete')
+      ns.tprint('Max out purchased servers, goal is complete at ', ns.tFormat(ns.getTimeSinceLastAug()))
       return
     }
 

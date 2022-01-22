@@ -70,7 +70,7 @@ export async function goalThreeAsync (ns) {
   }
   ns.tprint('Thanks for buying relaySMTP.exe updating nodes')
   await updateNodesAsync(ns)
-  ns.tprint('Goal 3 is completed')
+  ns.tprint('Goal 3 is completed at ', ns.tFormat(ns.getTimeSinceLastAug()))
 }
 
 /**
