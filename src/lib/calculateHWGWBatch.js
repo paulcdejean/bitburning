@@ -54,11 +54,11 @@ export function calculateHWGWBatch (ns, target, threads, opsBuffer = DEFAULT_OPS
 
   while (totalThreads <= threads) {
     hackThreads = hackThreads + 1
-    if (hackThreads * targetInfo.hackPower >= 1) {
+    if (hackThreads * targetInfo.safeHackPower >= 1) {
       // To avoid hacking down to zero
       break
     }
-    const percentToLeave = Math.pow((1 - (targetInfo.hackPower * hackThreads)), hacksPerThread)
+    const percentToLeave = Math.pow((1 - (targetInfo.safeHackPower * hackThreads)), hacksPerThread)
     const growThreads = Math.ceil(ns.growthAnalyze(target, 1 / percentToLeave))
     const hackSecurityIncrease = ns.hackAnalyzeSecurity(hackThreads) * hacksPerThread
     const hackWeakenThreads = Math.ceil(hackSecurityIncrease / ns.weakenAnalyze(1))
@@ -71,7 +71,7 @@ export function calculateHWGWBatch (ns, target, threads, opsBuffer = DEFAULT_OPS
 
   // Once more to get the final result
   hackThreads = hackThreads - 1
-  const percentToLeave = Math.pow((1 - (targetInfo.hackPower * hackThreads)), hacksPerThread)
+  const percentToLeave = Math.pow((1 - (targetInfo.safeHackPower * hackThreads)), hacksPerThread)
   const growThreads = Math.ceil(ns.growthAnalyze(target, 1 / percentToLeave))
   const hackSecurityIncrease = ns.hackAnalyzeSecurity(hackThreads) * hacksPerThread
   const hackWeakenThreads = Math.ceil(hackSecurityIncrease / ns.weakenAnalyze(1))
@@ -92,7 +92,9 @@ export function calculateHWGWBatch (ns, target, threads, opsBuffer = DEFAULT_OPS
 
   const cycleTime = targetInfo.weakenTime + cycleBuffer
 
-  const moneyPerCycle = targetInfo.maxMoney * (1 - percentToLeave)
+  // Calculate income from our real level, so that we can see that increasing safe levels up reduces income
+  const unsafePercentToLeave = Math.pow((1 - (targetInfo.hackPower * hackThreads)), hacksPerThread)
+  const moneyPerCycle = targetInfo.maxMoney * (1 - unsafePercentToLeave)
   const moneyPerSecond = moneyPerCycle / cycleTime * MILLISECONDS_IN_A_SECOND
   let moneyPerSecondPerThread
   if (totalThreads === 0) {

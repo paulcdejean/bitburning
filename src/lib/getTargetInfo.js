@@ -1,5 +1,7 @@
 import { GuardError } from './errors/GuardError.js'
 
+import { SAFE_LEVELS_UP } from './lib/constants.js'
+
 /**
  * Returns an info object about a particular target
  *
@@ -14,8 +16,20 @@ export function getTargetInfo (ns, target) {
   if (target === undefined) {
     throw new GuardError('target is required')
   }
+
   const serverInfo = ns.getServer(target)
   const info = {}
+
+  info.hackPower = ns.hackAnalyze(target)
+
+  // Formulas divination, see testing/hackPowerFormulaVerify.js
+  const playerHackingLevel = ns.getHackingLevel()
+  const hackingSkillMult = (playerHackingLevel - (serverInfo.requiredHackingSkill - 1)) / playerHackingLevel
+  const normalizedHackingPower = info.hackPower / hackingSkillMult
+  const safeHackingLevel = playerHackingLevel + SAFE_LEVELS_UP
+  const safeHackingSkillMult = (safeHackingLevel - (serverInfo.requiredHackingSkill - 1)) / safeHackingLevel
+  const safeHackingPower = normalizedHackingPower * safeHackingSkillMult
+
   info.name = target
   info.minSecurity = serverInfo.minDifficulty
   info.currentSecurity = serverInfo.hackDifficulty
@@ -24,8 +38,8 @@ export function getTargetInfo (ns, target) {
   info.weakenTime = ns.getWeakenTime(target)
   info.growTime = ns.getGrowTime(target)
   info.hackTime = ns.getHackTime(target)
-  info.hackPower = ns.hackAnalyze(target)
   info.requiredSkill = serverInfo.requiredHackingSkill
+  info.safeHackPower = safeHackingPower
 
   return info
 }
