@@ -17,11 +17,12 @@ import {
  * @param {NS} ns NS
  * @param target The target to calculate quad hack farm stats for
  * @param threads The number of threads to calculate the farm for
+ * @param startingHackThreads Performance optimization, the number of hack threads to start computing from
  * @param opsBuffer The amount to of padding between the hack grow and weaken
  * @param cycleBuffer The amount to wait after weaken lands, before calculating the cycle
  * @returns An object detailing all the info needed to farm the target
  */
-export function calculateHWGWBatch (ns, target, threads, opsBuffer = DEFAULT_OPS_BUFFER, cycleBuffer = DEFAULT_CYCLE_BUFFER) {
+export function calculateHWGWBatch (ns, target, threads, startingHackThreads = 0, opsBuffer = DEFAULT_OPS_BUFFER, cycleBuffer = DEFAULT_CYCLE_BUFFER) {
   if (ns === undefined) {
     throw new GuardError('ns is required')
   }
@@ -45,14 +46,13 @@ export function calculateHWGWBatch (ns, target, threads, opsBuffer = DEFAULT_OPS
 
   // We do a linear search here, we just keep adding hacking threads until the total threads is greater than what we have available.
   // After that we calculate with that many hacking threads - 1
-  let hackThreads = 0
+  let hackThreads = startingHackThreads
   let totalThreads = 0
 
   if (MATH_DEBUGGING) {
     ns.tprint(targetInfo)
   }
 
-  let n = 0
   while (totalThreads <= threads) {
     hackThreads = hackThreads + 1
     if (hackThreads * targetInfo.safeHackPower >= 1) {
@@ -66,9 +66,7 @@ export function calculateHWGWBatch (ns, target, threads, opsBuffer = DEFAULT_OPS
     const growSecurityIncrease = ns.growthAnalyzeSecurity(growThreads)
     const growWeakenThreads = Math.ceil(growSecurityIncrease / ns.weakenAnalyze(1))
     totalThreads = hackThreads + growThreads + hackWeakenThreads + growWeakenThreads
-    n = n + 1
   }
-  ns.tprint('Small n: ', n)
 
   // Hacking threads equaling zero here, means we don't have enough
 
