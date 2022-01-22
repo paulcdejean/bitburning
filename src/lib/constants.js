@@ -28,3 +28,6 @@ export const HACK_REMOTE_FILE = '/remotes/hack.js'
 // Money that is greater than 99% of max is considered the same as max
 // This is so we don't regrow 1% all the time cause of level up drift
 export const MAX_MONEY_ALLOWANCE = 0.99
+
+// The probability that we're fine with for hacking 100% of our intended amount from a server
+export const ACCEPTABLE_MAXHACK_PROBABILITY = 0.05

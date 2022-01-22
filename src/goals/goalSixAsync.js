@@ -10,6 +10,7 @@ import { releaseLockAsync } from './lib/releaseLockAsync.js'
 import { stopFarmsAsync } from './actions/stopFarmsAsync.js'
 import { updateNodesAsync } from './actions/updateNodesAsync.js'
 import { buyServer } from './actions/buyServer.js'
+import { scpRemotesAsync } from './actions/scpRemotesAsync.js'
 
 import { farmAsync } from './farmAsync.js'
 
@@ -32,7 +33,16 @@ export async function goalSixAsync (ns) {
     throw new GuardError('ns is required')
   }
 
-  const largestServerPrice = ns.getPurchasedServerCost(ns.getPurchasedServerMaxRam())
+  const maxServerRam = ns.getPurchasedServerMaxRam()
+  const largestServerPrice = ns.getPurchasedServerCost(maxServerRam)
+
+  const nodes = getNodes(ns)
+  for (const node in nodes) {
+    if (node.purchased && node.ram === maxServerRam) {
+      ns.tprint('Max size purchased server detected, skipping goal!')
+      return
+    }
+  }
 
   // Buy a server about as expensive as SQLInject.exe
   let serverMaxCost = 250000000
@@ -64,6 +74,7 @@ export async function goalSixAsync (ns) {
 
     buyServer(ns, serverMaxCost)
     await updateNodesAsync(ns)
+    await scpRemotesAsync(ns)
 
     if (serverMaxCost > largestServerPrice) {
       ns.tprint('Sucessfully purchased a max server, goal is complete')

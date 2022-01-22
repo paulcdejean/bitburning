@@ -15,6 +15,8 @@ export async function main (ns) {
   const batch = ns.args[4]
   const operation = ns.args[5]
   const hackCount = ns.args[6]
+  // eslint-disable-next-line no-unused-vars
+  const hackSubBatch = ns.args[7]
 
   let portString
   let portData
@@ -50,8 +52,7 @@ export async function main (ns) {
     while (hackNumber < hackCount) {
       hackNumber = hackNumber + 1
       await ns.hack(target)
-      // ns.tprint('Batch ', batch, ' hack #', hackNumber, ' ',
-      //   threads, ' threads: ', ns.nFormat(ns.getServerMoneyAvailable(target), '0.000a'))
+      ns.tprint('Batch ', batch, ' subatch #', hackSubBatch, ' ', threads, ' threads: ', ns.nFormat(ns.getServerMoneyAvailable(target), '0.000a'))
     }
   }
 }
