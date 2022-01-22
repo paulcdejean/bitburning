@@ -1,6 +1,8 @@
 import { GuardError } from './errors/GuardError.js'
 import { ServerPurchaseError } from './errors/ServerPurchaseError.js'
 
+import { PURCHASED_PREFIX } from './lib/constants.js'
+
 /**
  * Buys the most expensive server that's cheaper than the maxPrice
  *
@@ -21,7 +23,7 @@ export function buyServer (ns, maxPrice = Infinity) {
     serverRam = serverRam / 2
   }
 
-  const purchaseResult = ns.purchaseServer('purchased', serverRam)
+  const purchaseResult = ns.purchaseServer(PURCHASED_PREFIX, serverRam)
 
   if (purchaseResult === '') {
     throw new ServerPurchaseError('Failed to purchase server!')

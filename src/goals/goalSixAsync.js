@@ -38,7 +38,7 @@ export async function goalSixAsync (ns) {
 
   const nodes = getNodes(ns)
   for (const node in nodes) {
-    if (node.purchased && node.ram === maxServerRam) {
+    if (nodes[node].purchased && nodes[node].ram === maxServerRam) {
       ns.tprint('Max size purchased server detected, skipping goal!')
       return
     }

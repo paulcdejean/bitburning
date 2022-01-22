@@ -45,9 +45,10 @@ export function calculateHWGWFarm (ns, target, threads, opsBuffer = DEFAULT_OPS_
   let idealBatchCount = 0
   let bestIncome = 0
 
+  let n = 0
   while (batchCount > 0) {
     const batchSize = Math.floor(threads / batchCount)
-    const batchCalculations = calculateHWGWBatch(ns, target, batchSize, 1, opsBuffer, cycleBuffer)
+    const batchCalculations = calculateHWGWBatch(ns, target, batchSize, opsBuffer, cycleBuffer)
     const batchCycleTime = batchCalculations.cycleTime + (batchCount * opsBuffer)
     const cycleIncome = (batchCalculations.moneyPerCycle * batchCount) / batchCycleTime
 
@@ -57,10 +58,12 @@ export function calculateHWGWFarm (ns, target, threads, opsBuffer = DEFAULT_OPS_
     }
 
     batchCount = batchCount - 1
+    n = n + 1
   }
+  ns.tprint('BIG N: ', n)
 
   const batchSize = Math.floor(threads / idealBatchCount)
-  const batchCalculations = calculateHWGWBatch(ns, target, batchSize, 1, opsBuffer, cycleBuffer)
+  const batchCalculations = calculateHWGWBatch(ns, target, batchSize, opsBuffer, cycleBuffer)
 
   const farmCycleTime = batchCalculations.cycleTime + (idealBatchCount * opsBuffer * 4) + (opsBuffer * 4) // final bit is the bonus batch
   batchCalculations.moneyPerCycle = batchCalculations.moneyPerCycle * idealBatchCount

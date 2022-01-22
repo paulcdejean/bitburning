@@ -16,7 +16,7 @@ export const REMOTES_FOLDER = '/remotes/'
 
 export const DEFAULT_SKIM_PERCENT = 0.5
 
-export const MATH_DEBUGGING = true
+export const MATH_DEBUGGING = false
 
 export const DEFAULT_CYCLE_BUFFER = 200
 export const DEFAULT_OPS_BUFFER = 50
@@ -31,3 +31,5 @@ export const MAX_MONEY_ALLOWANCE = 0.99
 
 // The number of times its safe to level up during a HWGW farm or something
 export const SAFE_LEVELS_UP = 20
+
+export const PURCHASED_PREFIX = 'purchased'

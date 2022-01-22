@@ -1,4 +1,3 @@
 TODO:
-* Implement HWGW
-* We will stick to farming n00dles for first 4 programs, but we should compare HWGW with 1 grow thread, with quad hack
-* Targetting script on quad hack farm
+* Improve hiscore.js performance
+* Goal 7

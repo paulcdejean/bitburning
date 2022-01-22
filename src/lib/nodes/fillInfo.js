@@ -1,6 +1,6 @@
 import { GuardError } from './errors/GuardError.js'
 
-import { HOME } from './lib/constants.js'
+import { HOME, PURCHASED_PREFIX } from './lib/constants.js'
 
 /**
  * Fills out the following static info about the node:
@@ -32,5 +32,6 @@ export function fillInfo (ns, nodes) {
     nodes[node].minSecurity = serverInfo.minDifficulty
     nodes[node].requiredPorts = serverInfo.numOpenPortsRequired
     nodes[node].maxMoney = serverInfo.moneyMax
+    nodes[node].purchased = node.startsWith(PURCHASED_PREFIX)
   }
 }

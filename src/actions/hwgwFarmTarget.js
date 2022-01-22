@@ -126,11 +126,11 @@ export function hwgwFarmTarget (ns, target, threads) {
     })
   }
 
-  batchRemotes(ns, remotes, remoteRam)
+  // batchRemotes(ns, remotes, remoteRam)
 
   // Launch daemon
   ns.tprint('Launching daemon')
   const daemonArgs = [daemonFilename, HOME, 1, target, batch]
-  ns.exec(...daemonArgs)
+  // ns.exec(...daemonArgs)
   return daemonArgs
 }

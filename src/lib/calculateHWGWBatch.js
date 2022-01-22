@@ -52,6 +52,7 @@ export function calculateHWGWBatch (ns, target, threads, opsBuffer = DEFAULT_OPS
     ns.tprint(targetInfo)
   }
 
+  let n = 0
   while (totalThreads <= threads) {
     hackThreads = hackThreads + 1
     if (hackThreads * targetInfo.safeHackPower >= 1) {
@@ -65,7 +66,9 @@ export function calculateHWGWBatch (ns, target, threads, opsBuffer = DEFAULT_OPS
     const growSecurityIncrease = ns.growthAnalyzeSecurity(growThreads)
     const growWeakenThreads = Math.ceil(growSecurityIncrease / ns.weakenAnalyze(1))
     totalThreads = hackThreads + growThreads + hackWeakenThreads + growWeakenThreads
+    n = n + 1
   }
+  ns.tprint('Small n: ', n)
 
   // Hacking threads equaling zero here, means we don't have enough
 
