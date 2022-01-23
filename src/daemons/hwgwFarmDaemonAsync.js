@@ -71,14 +71,6 @@ export async function hwgwFarmDaemonAsync (ns, target, batches, cycleBuffer = DE
       batch = batch + 1
     }
 
-    // Bonus batch
-    batchData.push({
-      hack: hackSleep + (opsBuffer * batch * 4),
-      hackWeaken: hackWeakenSleep + (opsBuffer * batch * 4),
-      grow: growSleep + (opsBuffer * batch * 4),
-      growWeaken: growWeakenSleep + (opsBuffer * batch * 4)
-    })
-
     const cycleData = {
       cycle: cycle,
       finished: false,

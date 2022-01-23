@@ -31,6 +31,6 @@ export const SHARE_REMOTE_FILE = '/remotes/share.js'
 export const MAX_MONEY_ALLOWANCE = 0.99
 
 // The number of times its safe to level up during a HWGW farm or something
-export const SAFE_LEVELS_UP = 100
+export const SAFE_LEVELS_UP = 200
 
 export const PURCHASED_PREFIX = 'purchased'
