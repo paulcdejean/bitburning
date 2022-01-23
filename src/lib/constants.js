@@ -24,12 +24,13 @@ export const DEFAULT_OPS_BUFFER = 50
 export const WEAKEN_REMOTE_FILE = '/remotes/weaken.js'
 export const GROW_REMOTE_FILE = '/remotes/grow.js'
 export const HACK_REMOTE_FILE = '/remotes/hack.js'
+export const SHARE_REMOTE_FILE = '/remotes/share.js'
 
 // Money that is greater than 99% of max is considered the same as max
 // This is so we don't regrow 1% all the time cause of level up drift
 export const MAX_MONEY_ALLOWANCE = 0.99
 
 // The number of times its safe to level up during a HWGW farm or something
-export const SAFE_LEVELS_UP = 50
+export const SAFE_LEVELS_UP = 100
 
 export const PURCHASED_PREFIX = 'purchased'
