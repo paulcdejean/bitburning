@@ -48,6 +48,6 @@ export async function main (ns) {
     // ns.tprint('Batch ', batch, ' grow ', threads, ' threads starting grow')
 
     await ns.grow(target)
-    ns.tprint('Batch ', batch, ' grow ', threads, ' threads: ', ns.nFormat(ns.getServerMoneyAvailable(target), '0.000a'))
+    // ns.tprint('Batch ', batch, ' grow ', threads, ' threads: ', ns.nFormat(ns.getServerMoneyAvailable(target), '0.000a'))
   }
 }

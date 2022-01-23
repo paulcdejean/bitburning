@@ -50,7 +50,7 @@ export async function main (ns) {
     while (hackNumber < hackCount) {
       hackNumber = hackNumber + 1
       await ns.hack(target)
-      ns.tprint('Batch ', batch, ' hack #', hackNumber, ' ', threads, ' threads: ', ns.nFormat(ns.getServerMoneyAvailable(target), '0.000a'))
+      // ns.tprint('Batch ', batch, ' hack #', hackNumber, ' ', threads, ' threads: ', ns.nFormat(ns.getServerMoneyAvailable(target), '0.000a'))
     }
   }
 }
