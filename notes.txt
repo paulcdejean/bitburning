@@ -1,3 +1,3 @@
 TODO:
-* Improve hiscore.js performance
-* Goal 7
+* Upgrade weaken target so it will grow the target too if there's sufficent threads
+* Recalculate farm every cycle?
